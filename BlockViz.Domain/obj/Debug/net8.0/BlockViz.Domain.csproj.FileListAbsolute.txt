@@ -1,0 +1,12 @@
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\bin\Debug\net8.0\BlockViz.Domain.deps.json
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\bin\Debug\net8.0\BlockViz.Domain.dll
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\bin\Debug\net8.0\BlockViz.Domain.pdb
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0\BlockViz.Domain.csproj.AssemblyReference.cache
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0\BlockViz.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0\BlockViz.Domain.AssemblyInfoInputs.cache
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0\BlockViz.Domain.AssemblyInfo.cs
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0\BlockViz.Domain.csproj.CoreCompileInputs.cache
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0\BlockViz.Domain.dll
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0\refint\BlockViz.Domain.dll
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0\BlockViz.Domain.pdb
+C:\Users\1son2\OneDrive\바탕 화면\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0\ref\BlockViz.Domain.dll

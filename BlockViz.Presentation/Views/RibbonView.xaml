@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="BlockViz.Presentation.Views.RibbonView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:r="clr-namespace:Fluent;assembly=Fluent"
+             xmlns:local="clr-namespace:BlockViz.Presentation.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="130" d:DesignWidth="1000">
+    <DockPanel>
+        <r:Ribbon>
+            <r:Ribbon.Menu>
+                <r:Backstage Header="Exit">
+                    <r:BackstageTabControl/>
+                </r:Backstage>
+            </r:Ribbon.Menu>
+            <r:RibbonTabItem Header="Home">
+                <r:RibbonGroupBox Header="Select" Margin="0,0,1267,0" BorderBrush="Black" BorderThickness="1">
+                    <r:Button Header="New" Command="{Binding NewCommand}" />
+
+                    <r:Button Header="Save" />
+                </r:RibbonGroupBox>
+                <r:RibbonGroupBox Header="Speed Control" BorderBrush="Black" BorderThickness="1">
+                    <r:Button Header="2X" Command="{Binding Speed2Command}" BorderBrush="Black" BorderThickness="1"/>
+                    <r:Button Header="5X" Command="{Binding Speed5Command}" BorderBrush="Black" BorderThickness="1"/>
+                    <r:Button Header="10x" Command="{Binding Speed10Command}" BorderBrush="Black" BorderThickness="1"/>
+                    <r:Button Header="Pause" Command="{Binding PauseCommand}" BorderBrush="Black" BorderThickness="1"/>
+                </r:RibbonGroupBox>
+            </r:RibbonTabItem>
+        </r:Ribbon>
+    </DockPanel>
+</UserControl>

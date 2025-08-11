@@ -1,0 +1,22 @@
+<UserControl x:Class="BlockViz.Presentation.Views.ScheduleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helix="http://helix-toolkit.org/wpf">
+    <Grid>
+        <TextBlock Text="{Binding CurrentDate, StringFormat='yyyy-MM-dd'}"
+                   FontSize="16" Margin="10"/>
+
+        <helix:HelixViewport3D x:Name="viewport"
+                               Margin="0,40,0,0"
+                               ZoomExtentsWhenLoaded="True"
+                               ItemsSource="{Binding Visuals}">
+            <helix:DefaultLights/>
+            <helix:HelixViewport3D.Camera>
+                <PerspectiveCamera Position="15,20,30"
+                                   LookDirection="0,-1,-1"
+                                   UpDirection="0,0,-1"
+                                   FieldOfView="40" />
+            </helix:HelixViewport3D.Camera>
+        </helix:HelixViewport3D>
+    </Grid>
+</UserControl>

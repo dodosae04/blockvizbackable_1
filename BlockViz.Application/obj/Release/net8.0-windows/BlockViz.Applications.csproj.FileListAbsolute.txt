@@ -1,0 +1,16 @@
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\bin\Release\net8.0-windows\BlockViz.Applications.deps.json
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\bin\Release\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\bin\Release\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\bin\Release\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\bin\Release\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\BlockViz.Applications.csproj.AssemblyReference.cache
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\BlockViz.Applications.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\BlockViz.Applications.AssemblyInfoInputs.cache
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\BlockViz.Applications.AssemblyInfo.cs
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\BlockViz.Applications.csproj.CoreCompileInputs.cache
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\BlockViz.Applications.sourcelink.json
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\BlockViz.BE532DCC.Up2Date
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\refint\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Release\net8.0-windows\ref\BlockViz.Applications.dll
