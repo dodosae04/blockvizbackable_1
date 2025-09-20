@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Input;
+using BlockViz.Applications.Extensions;
 using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
 using Microsoft.Win32;
@@ -16,6 +17,7 @@ namespace BlockViz.Applications.ViewModels
         private readonly IExcelImportService excelLoader;
         private readonly IScheduleService scheduleService;
         private readonly SimulationService simulationService;
+        private readonly IBlockColorService colorService;
 
         public ICommand NewCommand { get; }
         public ICommand PauseCommand { get; }
@@ -46,12 +48,14 @@ namespace BlockViz.Applications.ViewModels
             IRibbonView view,
             IExcelImportService excelLoader,
             IScheduleService scheduleService,
-            SimulationService simulationService
+            SimulationService simulationService,
+            IBlockColorService colorService
         ) : base(view)
         {
             this.excelLoader = excelLoader;
             this.scheduleService = scheduleService;
             this.simulationService = simulationService;
+            this.colorService = colorService;
 
             NewCommand = new DelegateCommand(ExecuteNew);
             PauseCommand = new DelegateCommand(simulationService.Pause);
@@ -69,12 +73,16 @@ namespace BlockViz.Applications.ViewModels
 
             var blocks = excelLoader.Load(dlg.FileName)
                 .Where(b => b.DeployWorkplace >= 1 && b.DeployWorkplace <= 6)
-                .Where(b => b.Start < b.End)
                 .ToList();
             if (!blocks.Any()) return;
 
+            colorService.Reset();
             scheduleService.SetAllBlocks(blocks);
-            simulationService.Start(blocks.Min(b => b.Start));
+            var rangeStart = blocks.Min(b => b.Start);
+            var rangeEnd = blocks.Select(b => b.GetEffectiveEnd() ?? b.Start).Max();
+            if (rangeEnd <= rangeStart)
+                rangeEnd = rangeStart.AddDays(1);
+            simulationService.Start(rangeStart, rangeEnd);
         }
     }
 

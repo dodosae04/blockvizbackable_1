@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using BlockViz.Applications.Extensions;
 using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
 using OxyPlot;
@@ -16,7 +17,7 @@ namespace BlockViz.Applications.ViewModels
     /// <summary>
     /// 작업장별 1행(총 6행) · 오버레이 간트 (미래 구간 미표시, 색상 동기화 지원)
     /// - 회색 기본 막대를 먼저 깔고, 같은 작업장의 블록을 '시작일 오름차순'으로 now까지 덧그립니다.
-    /// - ColorResolver 훅으로 3D/PI와 동일 색상을 사용합니다.
+    /// - 전역 색상 서비스와 동기화하여 3D/PI와 동일 색상을 사용합니다.
     /// - 축 범위: 데이터 전체기간 + 살짝의 여백, 막대는 now까지만 그립니다(미래 X).
     /// </summary>
     [Export]
@@ -24,28 +25,12 @@ namespace BlockViz.Applications.ViewModels
     {
         private readonly IScheduleService scheduleService;
         private readonly SimulationService simulationService;
+        private readonly IBlockColorService colorService;
 
         public PlotModel GanttModel { get; }
 
         private readonly DateTimeAxis dateAxis;
         private readonly CategoryAxis catAxis;
-
-        // ====== 색상 동기화 훅 ======
-        // 앱 초기화 시 반드시 연결해 주세요 (예시):
-        // GanttViewModel.ColorResolver = b => {
-        //     var c = CommonPalette.GetColor(b); // Media.Color (3D/PI에서 쓰는 함수)
-        //     return OxyColor.FromArgb(c.A, c.R, c.G, c.B);
-        // };
-        public static Func<Block, OxyColor> ColorResolver { get; set; }
-
-        // fallback (ColorResolver 미연결 시 임시 팔레트)
-        private readonly Dictionary<string, OxyColor> fallbackMap = new();
-        private readonly OxyColor[] fallbackPalette =
-        {
-            OxyColors.Red, OxyColors.Orange, OxyColors.Yellow,
-            OxyColors.LimeGreen, OxyColors.SkyBlue, OxyColors.MediumPurple,
-            OxyColors.SandyBrown, OxyColors.Teal, OxyColors.DeepPink
-        };
 
         // 작업장 라벨(6행 고정)
         private static readonly int[] WorkplaceIds = { 1, 2, 3, 4, 5, 6 };
@@ -57,10 +42,12 @@ namespace BlockViz.Applications.ViewModels
         [ImportingConstructor]
         public GanttViewModel(IGanttView view,
                               IScheduleService scheduleService,
-                              SimulationService simulationService) : base(view)
+                              SimulationService simulationService,
+                              IBlockColorService colorService) : base(view)
         {
             this.scheduleService = scheduleService;
             this.simulationService = simulationService;
+            this.colorService = colorService;
 
             GanttModel = new PlotModel { Title = "공장 가동 스케줄" };
 
@@ -117,10 +104,16 @@ namespace BlockViz.Applications.ViewModels
 
             // 전체 기간 (엑셀 첫 시작 ~ 마지막 종료)
             var globalStart = FloorDate(all.Min(b => b.Start));
-            var globalEnd = CeilDate(all.Max(b => b.End));
+            var now = simulationService.CurrentDate;
+            var endCandidates = all.Select(b => b.GetEffectiveEnd())
+                                   .Where(d => d.HasValue)
+                                   .Select(d => d!.Value)
+                                   .ToList();
+            var globalEnd = endCandidates.Count > 0
+                ? CeilDate(endCandidates.Max())
+                : CeilDate(now > globalStart ? now : globalStart);
 
             // 현재일(now) — 미래 구간은 그리지 않음
-            var now = simulationService.CurrentDate;
             if (now < globalStart) now = globalStart;
             if (now > globalEnd) now = globalEnd;
 
@@ -175,10 +168,11 @@ namespace BlockViz.Applications.ViewModels
 
                 foreach (var b in list) // Start 오름차순 → 나중에 시작한 게 위에 올라감
                 {
-                    if (b.End <= b.Start) continue;
                     if (b.Start >= now) break;   // 아직 시작 안했으면 그리지 않음
 
-                    var endClamped = b.End > now ? now : b.End;
+                    var effectiveEnd = b.GetEffectiveEnd() ?? now;
+                    if (effectiveEnd <= b.Start) continue;
+                    var endClamped = effectiveEnd > now ? now : effectiveEnd;
                     if (endClamped <= b.Start) continue;
 
                     series.Items.Add(new IntervalBarItem
@@ -186,7 +180,7 @@ namespace BlockViz.Applications.ViewModels
                         CategoryIndex = catIndex,
                         Start = DateTimeAxis.ToDouble(b.Start),
                         End = DateTimeAxis.ToDouble(endClamped),
-                        Color = ResolveColor(b)
+                        Color = colorService.GetOxyColor(b.Name)
                     });
                 }
             }
@@ -197,22 +191,8 @@ namespace BlockViz.Applications.ViewModels
 
         // ===== 유틸 =====
         private static DateTime FloorDate(DateTime dt) => dt.Date;
-        private static DateTime CeilDate(DateTime dt) =>
-            dt.TimeOfDay == TimeSpan.Zero ? dt.Date : dt.Date.AddDays(1);
 
-        private OxyColor ResolveColor(Block b)
-        {
-            // 1) 외부 동기화 훅이 연결돼 있으면 그것 사용(3D/PI와 완전 동일)
-            if (ColorResolver != null) return ColorResolver(b);
-
-            // 2) 미연결 시 임시 팔레트 (이 경우 3D/PI와 색이 다를 수 있음)
-            var key = string.IsNullOrWhiteSpace(b.Name) ? $"#{b.BlockID}" : b.Name.Trim();
-            if (!fallbackMap.TryGetValue(key, out var c))
-            {
-                c = fallbackPalette[fallbackMap.Count % fallbackPalette.Length];
-                fallbackMap[key] = c;
-            }
-            return c;
-        }
+        private static DateTime CeilDate(DateTime dt)
+            => dt.TimeOfDay == TimeSpan.Zero ? dt.Date : dt.Date.AddDays(1);
     }
 }

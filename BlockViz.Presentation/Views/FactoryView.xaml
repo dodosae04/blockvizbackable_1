@@ -7,6 +7,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- 상단 날짜 (ScheduleView와 동일 컨셉) -->
@@ -23,6 +24,9 @@
                            ShowCoordinateSystem="True"
                            ShowViewCube="False"
                            ZoomExtentsWhenLoaded="False"
+                           IsPanEnabled="False"
+                           IsZoomEnabled="False"
+                           IsRotateEnabled="False"
                            MouseLeftButtonDown="OnViewportMouseLeftButtonDown">
 
             <!-- ✅ 옛날 버전의 카메라 설정을 그대로 사용 -->
@@ -36,5 +40,39 @@
             <wpf:DefaultLights />
             <ModelVisual3D x:Name="SceneRoot" />
         </wpf:HelixViewport3D>
+
+        <Grid Grid.Row="2" Margin="12,6,12,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="startDateText"
+                       VerticalAlignment="Center"
+                       Margin="0,0,12,0"
+                       Foreground="#334155"
+                       FontSize="12"
+                       Text="-" />
+
+            <Slider x:Name="timelineSlider"
+                    Grid.Column="1"
+                    Minimum="0"
+                    Maximum="1"
+                    TickFrequency="1"
+                    IsMoveToPointEnabled="True"
+                    SmallChange="1"
+                    LargeChange="7"
+                    IsSnapToTickEnabled="False"
+                    ValueChanged="TimelineSlider_ValueChanged" />
+
+            <TextBlock x:Name="endDateText"
+                       Grid.Column="2"
+                       VerticalAlignment="Center"
+                       Margin="12,0,0,0"
+                       Foreground="#334155"
+                       FontSize="12"
+                       Text="-" />
+        </Grid>
     </Grid>
 </UserControl>

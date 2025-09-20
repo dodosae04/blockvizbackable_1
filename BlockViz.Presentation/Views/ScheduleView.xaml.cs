@@ -19,8 +19,11 @@ namespace BlockViz.Presentation.Views
     {
         private ObservableCollection<Visual3D> visuals = new();
         private DateTime currentDate;
+        private DateTime timelineStart;
+        private DateTime timelineEnd;
+        private bool timelineConfigured;
+        private bool suppressTimelineEvent;
 
-        // FactoryViewøÕ µø¿œ«— √ ±‚ ƒ´∏ﬁ∂Û ∞™
         private static readonly Point3D InitPos = new(15, 20, 30);
         private static readonly Vector3D InitDir = new(-1, 0, -10);
         private static readonly Vector3D InitUp = new(-1, 1000, 1);
@@ -32,7 +35,6 @@ namespace BlockViz.Presentation.Views
             Loaded += (_, __) => { ApplyVisuals(); UpdateDateText(); EnsureInitialCamera(); };
         }
 
-        // IScheduleView ±∏«ˆ ----------------------------
         public ObservableCollection<Visual3D> Visuals
         {
             get => visuals;
@@ -49,16 +51,61 @@ namespace BlockViz.Presentation.Views
         public DateTime CurrentDate
         {
             get => currentDate;
-            set { currentDate = value; UpdateDateText(); }
+            set
+            {
+                currentDate = value;
+                UpdateDateText();
+                UpdateTimelineSlider();
+            }
         }
 
         public event Action<Block>? BlockClicked;
-        // ------------------------------------------------
+        public event EventHandler<double>? TimelineValueChanged;
+
+        public void ConfigureTimeline(DateTime start, DateTime end)
+        {
+            timelineStart = start;
+            timelineEnd = end < start ? start : end;
+            timelineConfigured = true;
+
+            if (startDateText != null)
+                startDateText.Text = timelineConfigured ? timelineStart.ToString("yyyy-MM-dd") : "-";
+            if (endDateText != null)
+                endDateText.Text = timelineConfigured ? timelineEnd.ToString("yyyy-MM-dd") : "-";
+
+            if (timelineSlider != null)
+            {
+                var totalDays = Math.Max(0.0, (timelineEnd - timelineStart).TotalDays);
+                timelineSlider.Minimum = 0;
+                timelineSlider.Maximum = totalDays;
+                timelineSlider.IsEnabled = timelineConfigured && totalDays > 0;
+            }
+
+            UpdateTimelineSlider();
+        }
 
         private void UpdateDateText()
         {
             if (dateText != null && currentDate != default)
                 dateText.Text = currentDate.ToString("yyyy-MM-dd");
+        }
+
+        private void UpdateTimelineSlider()
+        {
+            if (!timelineConfigured || timelineSlider == null) return;
+
+            var clamped = currentDate;
+            if (clamped < timelineStart) clamped = timelineStart;
+            if (clamped > timelineEnd) clamped = timelineEnd;
+
+            var value = (clamped - timelineStart).TotalDays;
+            if (double.IsNaN(value) || double.IsInfinity(value)) value = 0;
+            if (value < timelineSlider.Minimum) value = timelineSlider.Minimum;
+            if (value > timelineSlider.Maximum) value = timelineSlider.Maximum;
+
+            suppressTimelineEvent = true;
+            timelineSlider.Value = value;
+            suppressTimelineEvent = false;
         }
 
         private void Visuals_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -73,11 +120,13 @@ namespace BlockViz.Presentation.Views
 
             try
             {
-                // µø¿œ ±∏µµ∏¶ ¿Ø¡ˆ«— √§∑Œ »≠∏È∏∏ ∏¬√„
                 EnsureInitialCamera();
                 viewport?.ZoomExtents();
             }
-            catch { /* µ¿⁄¿Ã≥ /∑±≈∏¿” ∫∏»£ */ }
+            catch
+            {
+                // ÎîîÏûêÏù∏/Îü∞ÌÉÄÏûÑ ÏòàÏô∏ Î¨¥Ïãú
+            }
         }
 
         private void EnsureInitialCamera()
@@ -105,11 +154,9 @@ namespace BlockViz.Presentation.Views
                     DependencyObject? d = r.VisualHit as DependencyObject;
                     while (d != null)
                     {
-                        // Attached DP∑Œ ∫Ì∑œ √£±‚
                         var blk = TryGetBlockFromAttachedProperty(d);
                         if (blk != null) { foundBlock = blk; return HitTestResultBehavior.Stop; }
 
-                        // (ø…º«) Tagø° ∫Ÿ¿Œ ∞ÊøÏµµ ¡ˆø¯
                         var tag = d.GetValue(FrameworkElement.TagProperty);
                         if (tag is Block tb) { foundBlock = tb; return HitTestResultBehavior.Stop; }
 
@@ -132,13 +179,18 @@ namespace BlockViz.Presentation.Views
         {
             try
             {
-                // BlockViz.Applications.Models.BlockProperties.GetData(DependencyObject)
                 var type = Type.GetType("BlockViz.Applications.Models.BlockProperties, BlockViz.Applications");
                 var getMethod = type?.GetMethod("GetData", BindingFlags.Public | BindingFlags.Static);
                 var obj = getMethod?.Invoke(null, new object[] { d });
                 return obj as Block;
             }
             catch { return null; }
+        }
+
+        private void TimelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (!timelineConfigured || suppressTimelineEvent) return;
+            TimelineValueChanged?.Invoke(this, e.NewValue);
         }
     }
 }

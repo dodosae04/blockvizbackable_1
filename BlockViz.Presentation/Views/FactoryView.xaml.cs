@@ -19,6 +19,10 @@ namespace BlockViz.Presentation.Views
     {
         private ObservableCollection<Visual3D> visuals = new();
         private DateTime currentDate;
+        private DateTime timelineStart;
+        private DateTime timelineEnd;
+        private bool timelineConfigured;
+        private bool suppressTimelineEvent;
 
         // 옛날 카메라와 동일한 초기값(필요 시 ZoomExtents 후에도 자세 유지)
         private static readonly Point3D InitPos = new(15, 20, 30);
@@ -54,16 +58,62 @@ namespace BlockViz.Presentation.Views
         public DateTime CurrentDate
         {
             get => currentDate;
-            set { currentDate = value; UpdateDateText(); }
+            set
+            {
+                currentDate = value;
+                UpdateDateText();
+                UpdateTimelineSlider();
+            }
         }
 
         public event Action<Block>? BlockClicked;
+        public event EventHandler<double>? TimelineValueChanged;
         // ============================
+
+        public void ConfigureTimeline(DateTime start, DateTime end)
+        {
+            timelineStart = start;
+            timelineEnd = end < start ? start : end;
+            timelineConfigured = true;
+
+            if (startDateText != null)
+                startDateText.Text = timelineConfigured ? timelineStart.ToString("yyyy-MM-dd") : "-";
+            if (endDateText != null)
+                endDateText.Text = timelineConfigured ? timelineEnd.ToString("yyyy-MM-dd") : "-";
+
+            if (timelineSlider != null)
+            {
+                var totalDays = Math.Max(0.0, (timelineEnd - timelineStart).TotalDays);
+                timelineSlider.Minimum = 0;
+                timelineSlider.Maximum = totalDays;
+                timelineSlider.IsEnabled = timelineConfigured && totalDays > 0;
+            }
+
+            UpdateTimelineSlider();
+        }
 
         private void UpdateDateText()
         {
             if (dateText != null && currentDate != default)
                 dateText.Text = currentDate.ToString("yyyy-MM-dd");
+        }
+
+        private void UpdateTimelineSlider()
+        {
+            if (!timelineConfigured || timelineSlider == null) return;
+
+            var clamped = currentDate;
+            if (clamped < timelineStart) clamped = timelineStart;
+            if (clamped > timelineEnd) clamped = timelineEnd;
+
+            var value = (clamped - timelineStart).TotalDays;
+            if (double.IsNaN(value) || double.IsInfinity(value)) value = 0;
+            if (value < timelineSlider.Minimum) value = timelineSlider.Minimum;
+            if (value > timelineSlider.Maximum) value = timelineSlider.Maximum;
+
+            suppressTimelineEvent = true;
+            timelineSlider.Value = value;
+            suppressTimelineEvent = false;
         }
 
         private void Visuals_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -137,6 +187,12 @@ namespace BlockViz.Presentation.Views
                 BlockClicked?.Invoke(foundBlock);
                 e.Handled = true;
             }
+        }
+
+        private void TimelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (!timelineConfigured || suppressTimelineEvent) return;
+            TimelineValueChanged?.Invoke(this, e.NewValue);
         }
 
         private static Block? TryGetBlockFromAttachedProperty(DependencyObject d)

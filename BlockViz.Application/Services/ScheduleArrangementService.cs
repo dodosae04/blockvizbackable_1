@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using BlockViz.Applications.Extensions;
 using BlockViz.Applications.Models;   // BlockProperties
 using BlockViz.Domain.Models;         // Block
 using HelixToolkit.Wpf;
@@ -117,7 +118,10 @@ namespace BlockViz.Applications.Services
 
                 // ---- 전역 기준점에 따른 Z 범위 ----
                 double baseZ = BaselineAt(b.Start, globalStart);
-                double topZ = BaselineAt(Min(currentDate, b.End), globalStart);
+                var effectiveEnd = b.GetEffectiveEnd();
+                var cappedEnd = effectiveEnd.HasValue ? effectiveEnd.Value : currentDate;
+                if (cappedEnd < b.Start) cappedEnd = b.Start;
+                double topZ = BaselineAt(Min(currentDate, cappedEnd), globalStart);
                 double sizeZ = Math.Max((topZ - baseZ) * ZScale, BlockMinHeight);
 
                 // 표시용 X/Y 축소
