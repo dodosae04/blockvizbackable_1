@@ -26,7 +26,6 @@
                            ZoomExtentsWhenLoaded="False"
                            IsPanEnabled="False"
                            IsZoomEnabled="False"
-                           IsRotateEnabled="False"
                            MouseLeftButtonDown="OnViewportMouseLeftButtonDown">
 
             <!-- ✅ 옛날 버전의 카메라 설정을 그대로 사용 -->

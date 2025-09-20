@@ -24,7 +24,6 @@
                            ZoomExtentsWhenLoaded="False"
                            IsPanEnabled="False"
                            IsZoomEnabled="False"
-                           IsRotateEnabled="False"
                            MouseLeftButtonDown="OnViewportMouseLeftButtonDown">
 
             <wpf:HelixViewport3D.Camera>
