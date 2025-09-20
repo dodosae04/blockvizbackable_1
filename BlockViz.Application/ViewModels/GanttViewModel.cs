@@ -26,7 +26,7 @@ namespace BlockViz.Applications.ViewModels
         private readonly IScheduleService scheduleService;
         private readonly SimulationService simulationService;
         private readonly IBlockColorService colorService;
-        private readonly HashSet<int> expandedWorkplaces = new HashSet<int>();
+        private int? selectedWorkplaceId;
 
         public PlotModel GanttModel { get; }
 
@@ -127,43 +127,28 @@ namespace BlockViz.Applications.ViewModels
                     UpdateGantt();
             };
 
-            view.WorkplaceToggleChanged += OnWorkplaceToggleChanged;
-            view.ExpandAllRequested += OnExpandAllRequested;
-            view.CollapseAllRequested += OnCollapseAllRequested;
+            view.WorkplaceFilterRequested += OnWorkplaceFilterRequested;
 
             UpdateGantt();
             view.GanttModel = GanttModel;
-            SyncToggleStatesToView();
+            view.SetActiveWorkplace(selectedWorkplaceId);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnWorkplaceToggleChanged(object sender, WorkplaceToggleChangedEventArgs e)
+        private void OnWorkplaceFilterRequested(object sender, WorkplaceFilterRequestedEventArgs e)
         {
-            if (e.IsExpanded) expandedWorkplaces.Add(e.WorkplaceId);
-            else expandedWorkplaces.Remove(e.WorkplaceId);
+            if (e?.WorkplaceId.HasValue == true && !WorkplaceIds.Contains(e.WorkplaceId.Value))
+            {
+                selectedWorkplaceId = null;
+            }
+            else
+            {
+                selectedWorkplaceId = e?.WorkplaceId;
+            }
 
+            ViewCore.SetActiveWorkplace(selectedWorkplaceId);
             UpdateGantt();
-        }
-
-        private void OnExpandAllRequested(object sender, EventArgs e)
-        {
-            foreach (var id in WorkplaceIds) expandedWorkplaces.Add(id);
-            SyncToggleStatesToView();
-            UpdateGantt();
-        }
-
-        private void OnCollapseAllRequested(object sender, EventArgs e)
-        {
-            expandedWorkplaces.Clear();
-            SyncToggleStatesToView();
-            UpdateGantt();
-        }
-
-        private void SyncToggleStatesToView()
-        {
-            var states = WorkplaceIds.ToDictionary(id => id, id => expandedWorkplaces.Contains(id));
-            ViewCore.SetWorkplaceToggleStates(states);
         }
 
         private void UpdateGantt()
@@ -227,12 +212,14 @@ namespace BlockViz.Applications.ViewModels
             var axisLabels = new List<string>();
             var rowSegments = new List<List<BlockSegment>>();
 
-            foreach (var wpId in WorkplaceIds)
+            var visibleWorkplaces = GetVisibleWorkplaces();
+
+            foreach (var wpId in visibleWorkplaces)
             {
                 var list = byWp.TryGetValue(wpId, out var l) ? l : null;
                 var segments = BuildSegments(list, now);
 
-                if (!expandedWorkplaces.Contains(wpId))
+                if (!ShouldExpandWorkplace(wpId))
                 {
                     axisLabels.Add($"작업장 {wpId}");
                     rowSegments.Add(segments);
@@ -261,14 +248,7 @@ namespace BlockViz.Applications.ViewModels
                 }
             }
 
-            if (axisLabels.Count == 0)
-            {
-                foreach (var id in WorkplaceIds)
-                {
-                    axisLabels.Add($"작업장 {id}");
-                    rowSegments.Add(new List<BlockSegment>());
-                }
-            }
+            EnsureDefaultRows(axisLabels, rowSegments);
 
             catAxis.Labels.Clear();
             foreach (var label in axisLabels) catAxis.Labels.Add(label);
@@ -318,6 +298,41 @@ namespace BlockViz.Applications.ViewModels
 
             GanttModel.Series.Add(series);
             GanttModel.InvalidatePlot(true);
+        }
+
+        private IEnumerable<int> GetVisibleWorkplaces()
+        {
+            if (selectedWorkplaceId.HasValue)
+            {
+                var id = selectedWorkplaceId.Value;
+                if (WorkplaceIds.Contains(id))
+                {
+                    yield return id;
+                    yield break;
+                }
+            }
+
+            foreach (var id in WorkplaceIds)
+            {
+                yield return id;
+            }
+        }
+
+        private bool ShouldExpandWorkplace(int workplaceId)
+            => selectedWorkplaceId.HasValue && selectedWorkplaceId.Value == workplaceId;
+
+        private void EnsureDefaultRows(ICollection<string> axisLabels, ICollection<List<BlockSegment>> rowSegments)
+        {
+            if (axisLabels.Count > 0)
+            {
+                return;
+            }
+
+            foreach (var id in GetVisibleWorkplaces())
+            {
+                axisLabels.Add($"작업장 {id}");
+                rowSegments.Add(new List<BlockSegment>());
+            }
         }
 
         private static List<BlockSegment> BuildSegments(IReadOnlyList<Block>? blocks, DateTime now)

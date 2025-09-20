@@ -12,30 +12,31 @@ namespace BlockViz.Presentation.Views
     [PartCreationPolicy(System.ComponentModel.Composition.CreationPolicy.NonShared)]
     public partial class GanttView : UserControl, IGanttView
     {
-        private readonly Dictionary<int, ToggleButton> toggleButtons;
-        private bool suppressToggleNotification;
+        private const int DefaultFilterKey = 0;
+
+        private readonly Dictionary<int, ToggleButton> filterButtons;
+        private bool suppressFilterNotification;
         private PlotModel model;
 
         public GanttView()
         {
             InitializeComponent();
 
-            toggleButtons = new Dictionary<int, ToggleButton>
+            filterButtons = new Dictionary<int, ToggleButton>
             {
-                { 1, toggleWp1 },
-                { 2, toggleWp2 },
-                { 3, toggleWp3 },
-                { 4, toggleWp4 },
-                { 5, toggleWp5 },
-                { 6, toggleWp6 }
+                { DefaultFilterKey, filterDefaultButton },
+                { 1, filterWp1Button },
+                { 2, filterWp2Button },
+                { 3, filterWp3Button },
+                { 4, filterWp4Button },
+                { 5, filterWp5Button },
+                { 6, filterWp6Button }
             };
+
+            SetActiveButton(DefaultFilterKey);
         }
 
-        public event EventHandler<WorkplaceToggleChangedEventArgs> WorkplaceToggleChanged;
-
-        public event EventHandler ExpandAllRequested;
-
-        public event EventHandler CollapseAllRequested;
+        public event EventHandler<WorkplaceFilterRequestedEventArgs> WorkplaceFilterRequested;
 
         public PlotModel GanttModel
         {
@@ -50,52 +51,91 @@ namespace BlockViz.Presentation.Views
             }
         }
 
-        public void SetWorkplaceToggleStates(IReadOnlyDictionary<int, bool> states)
+        public void SetActiveWorkplace(int? workplaceId)
         {
-            suppressToggleNotification = true;
+            int key = workplaceId.HasValue ? workplaceId.Value : DefaultFilterKey;
+            if (!filterButtons.ContainsKey(key))
+            {
+                key = DefaultFilterKey;
+            }
+
+            SetActiveButton(key);
+        }
+
+        private void SetActiveButton(int key)
+        {
+            suppressFilterNotification = true;
             try
             {
-                foreach (var pair in toggleButtons)
+                foreach (var pair in filterButtons)
                 {
-                    bool isExpanded = states != null && states.TryGetValue(pair.Key, out var value) && value;
-                    pair.Value.IsChecked = isExpanded;
+                    pair.Value.IsChecked = pair.Key == key;
                 }
             }
             finally
             {
-                suppressToggleNotification = false;
+                suppressFilterNotification = false;
             }
         }
 
-        private void OnWorkplaceToggleChanged(object sender, System.Windows.RoutedEventArgs e)
+        private void OnFilterButtonChecked(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (suppressToggleNotification)
+            if (suppressFilterNotification)
             {
                 return;
             }
 
             if (sender is ToggleButton toggle)
             {
-                int id = ExtractWorkplaceId(toggle.Tag);
-                if (id > 0)
+                int key = ExtractFilterKey(toggle.Tag);
+                if (!filterButtons.ContainsKey(key))
                 {
-                    bool isExpanded = toggle.IsChecked == true;
-                    WorkplaceToggleChanged?.Invoke(this, new WorkplaceToggleChangedEventArgs(id, isExpanded));
+                    key = DefaultFilterKey;
+                }
+
+                suppressFilterNotification = true;
+                try
+                {
+                    foreach (var pair in filterButtons)
+                    {
+                        if (!ReferenceEquals(pair.Value, toggle))
+                        {
+                            pair.Value.IsChecked = false;
+                        }
+                    }
+                }
+                finally
+                {
+                    suppressFilterNotification = false;
+                }
+
+                var workplaceId = key == DefaultFilterKey ? (int?)null : key;
+                WorkplaceFilterRequested?.Invoke(this, new WorkplaceFilterRequestedEventArgs(workplaceId));
+            }
+        }
+
+        private void OnFilterButtonUnchecked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (suppressFilterNotification)
+            {
+                return;
+            }
+
+            if (sender is ToggleButton toggle)
+            {
+                suppressFilterNotification = true;
+                try
+                {
+                    toggle.IsChecked = true;
+                }
+                finally
+                {
+                    suppressFilterNotification = false;
                 }
             }
         }
 
-        private void OnExpandAllClicked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            ExpandAllRequested?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnCollapseAllClicked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            CollapseAllRequested?.Invoke(this, EventArgs.Empty);
-        }
-
-        private static int ExtractWorkplaceId(object tag)
+        private static int ExtractFilterKey(object tag)
         {
             if (tag is int intValue)
             {
@@ -107,8 +147,7 @@ namespace BlockViz.Presentation.Views
                 return parsed;
             }
 
-            return -1;
+            return DefaultFilterKey;
         }
     }
 }
-
