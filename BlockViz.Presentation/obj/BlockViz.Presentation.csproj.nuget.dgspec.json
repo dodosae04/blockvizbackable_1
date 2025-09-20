@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Presentation\\BlockViz.Presentation.csproj": {}
+    "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Presentation\\BlockViz.Presentation.csproj": {}
   },
   "projects": {
-    "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Application\\BlockViz.Applications.csproj": {
+    "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Application\\BlockViz.Applications.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Application\\BlockViz.Applications.csproj",
+        "projectUniqueName": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Application\\BlockViz.Applications.csproj",
         "projectName": "BlockViz.Applications",
-        "projectPath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Application\\BlockViz.Applications.csproj",
+        "projectPath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Application\\BlockViz.Applications.csproj",
         "packagesPath": "C:\\Users\\1son2\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Application\\obj\\",
+        "outputPath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -33,8 +33,8 @@
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows",
             "projectReferences": {
-              "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Domain\\BlockViz.Domain.csproj": {
-                "projectPath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Domain\\BlockViz.Domain.csproj"
+              "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Domain\\BlockViz.Domain.csproj": {
+                "projectPath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Domain\\BlockViz.Domain.csproj"
               }
             }
           }
@@ -58,6 +58,10 @@
             "CsvHelper": {
               "target": "Package",
               "version": "[33.0.1, )"
+            },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[8.1.1, )"
             },
             "Extended.Wpf.Toolkit": {
               "target": "Package",
@@ -139,14 +143,14 @@
         }
       }
     },
-    "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Domain\\BlockViz.Domain.csproj": {
+    "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Domain\\BlockViz.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Domain\\BlockViz.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Domain\\BlockViz.Domain.csproj",
         "projectName": "BlockViz.Domain",
-        "projectPath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Domain\\BlockViz.Domain.csproj",
+        "projectPath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Domain\\BlockViz.Domain.csproj",
         "packagesPath": "C:\\Users\\1son2\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Domain\\obj\\",
+        "outputPath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -266,14 +270,14 @@
         }
       }
     },
-    "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Presentation\\BlockViz.Presentation.csproj": {
+    "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Presentation\\BlockViz.Presentation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Presentation\\BlockViz.Presentation.csproj",
+        "projectUniqueName": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Presentation\\BlockViz.Presentation.csproj",
         "projectName": "BlockViz.Presentation",
-        "projectPath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Presentation\\BlockViz.Presentation.csproj",
+        "projectPath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Presentation\\BlockViz.Presentation.csproj",
         "packagesPath": "C:\\Users\\1son2\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Presentation\\obj\\",
+        "outputPath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Presentation\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -295,11 +299,11 @@
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows",
             "projectReferences": {
-              "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Application\\BlockViz.Applications.csproj": {
-                "projectPath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Application\\BlockViz.Applications.csproj"
+              "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Application\\BlockViz.Applications.csproj": {
+                "projectPath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Application\\BlockViz.Applications.csproj"
               },
-              "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Domain\\BlockViz.Domain.csproj": {
-                "projectPath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Domain\\BlockViz.Domain.csproj"
+              "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Domain\\BlockViz.Domain.csproj": {
+                "projectPath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Domain\\BlockViz.Domain.csproj"
               }
             }
           }

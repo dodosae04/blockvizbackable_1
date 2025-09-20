@@ -6,15 +6,26 @@ using PlotModel = OxyPlot.PlotModel;
 
 namespace BlockViz.Presentation.Views
 {
-    [Export, Export(typeof(IPiView))]
+    [Export(typeof(IPiView))]
+    [PartCreationPolicy(System.ComponentModel.Composition.CreationPolicy.NonShared)]
     public partial class PiView : UserControl, IPiView
     {
-        public ObservableCollection<PlotModel> PieModels { get; set; }
+        private ObservableCollection<PlotModel> models = new ObservableCollection<PlotModel>();
 
-        [ImportingConstructor]
         public PiView()
         {
             InitializeComponent();
+            if (cards != null) cards.ItemsSource = models;
+        }
+
+        public ObservableCollection<PlotModel> PieModels
+        {
+            get => models;
+            set
+            {
+                models = value ?? new ObservableCollection<PlotModel>();
+                if (cards != null) cards.ItemsSource = models;
+            }
         }
     }
 }

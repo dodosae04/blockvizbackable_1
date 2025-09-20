@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gRbftHunjdA=",
+  "dgSpecHash": "Uo9eW7CLOwA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\1son2\\Desktop\\now BlockViz\\BlockViz_0718\\BlockViz_0602\\BlockViz\\BlockViz.Domain\\BlockViz.Domain.csproj",
+  "projectFilePath": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Domain\\BlockViz.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\1son2\\.nuget\\packages\\assimpnet\\5.0.0-beta1\\assimpnet.5.0.0-beta1.nupkg.sha512",
     "C:\\Users\\1son2\\.nuget\\packages\\controlzex\\7.0.1\\controlzex.7.0.1.nupkg.sha512",

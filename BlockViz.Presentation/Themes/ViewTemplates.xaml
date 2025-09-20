@@ -1,0 +1,25 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:BlockViz.Applications.ViewModels;assembly=BlockViz.Applications"
+    xmlns:views="clr-namespace:BlockViz.Presentation.Views">
+
+    <!-- 중앙(Document) -->
+    <DataTemplate DataType="{x:Type vm:FactoryViewModel}">
+        <views:FactoryView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:ScheduleViewModel}">
+        <views:ScheduleView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:GanttViewModel}">
+        <views:GanttView/>
+    </DataTemplate>
+
+    <!-- 우측(Anchorable) -->
+    <DataTemplate DataType="{x:Type vm:PiViewModel}">
+        <views:PiView/>
+    </DataTemplate>
+
+</ResourceDictionary>

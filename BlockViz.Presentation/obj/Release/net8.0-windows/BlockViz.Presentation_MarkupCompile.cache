@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Presentation\obj\Release\net8.0-windows\
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Presentation\obj\Release\net8.0-windows\
 BlockViz.Presentation
 none
 false
-TRACE;RELEASE;NET;NET8_0;NETCOREAPP
-C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Presentation\App.xaml
-7716989758
+TRACE;RELEASE;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Presentation\App.xaml
+111239418073
 2-1126149063
-112016622192
-2662083475767
-Views\FactoryView.xaml;Views\GanttView.xaml;Views\PiView.xaml;Views\RibbonView.xaml;Views\ScheduleView.xaml;Views\ShellWindow.xaml;Views\TreeView.xaml;
+14-827740536
+2771180853992
+Themes\Colors.xaml;Themes\Controls.xaml;Themes\Typography.xaml;Themes\ViewTemplates.xaml;Views\FactoryView.xaml;Views\GanttView.xaml;Views\PiView.xaml;Views\RibbonView.xaml;Views\ScheduleView.xaml;Views\ShellWindow.xaml;Views\TreeView.xaml;
 
 False
 

@@ -19,7 +19,7 @@
                     <xcad:LayoutPanel Orientation="Horizontal">
 
                         <xcad:LayoutAnchorablePane DockWidth="200">
-                            <xcad:LayoutAnchorable Title="Navigator">
+                            <xcad:LayoutAnchorable Title="Properties">
                                 <ContentPresenter Content="{Binding ContentTreeView}" />
                             </xcad:LayoutAnchorable>
                         </xcad:LayoutAnchorablePane>

@@ -135,3 +135,99 @@ C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockVi
 C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\refint\BlockViz.Applications.dll
 C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.pdb
 C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\ref\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.deps.json
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.AssemblyReference.cache
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfoInputs.cache
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfo.cs
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.CoreCompileInputs.cache
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.sourcelink.json
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.BE532DCC.Up2Date
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\refint\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\ref\BlockViz.Applications.dll
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.deps.json
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.AssemblyReference.cache
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfoInputs.cache
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfo.cs
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.CoreCompileInputs.cache
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.sourcelink.json
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.BE532DCC.Up2Date
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\refint\BlockViz.Applications.dll
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\ref\BlockViz.Applications.dll
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.deps.json
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.AssemblyReference.cache
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfoInputs.cache
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfo.cs
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.CoreCompileInputs.cache
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.sourcelink.json
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.BE532DCC.Up2Date
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\refint\BlockViz.Applications.dll
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\ref\BlockViz.Applications.dll
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.deps.json
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.AssemblyReference.cache
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfoInputs.cache
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfo.cs
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.CoreCompileInputs.cache
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.sourcelink.json
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.BE532DCC.Up2Date
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\refint\BlockViz.Applications.dll
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\ref\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.deps.json
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.AssemblyReference.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfoInputs.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfo.cs
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.CoreCompileInputs.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.sourcelink.json
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.BE532DCC.Up2Date
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\refint\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Application\obj\Debug\net8.0-windows\ref\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.deps.json
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.AssemblyReference.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfoInputs.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.AssemblyInfo.cs
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.csproj.CoreCompileInputs.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.sourcelink.json
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.BE532DCC.Up2Date
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\refint\BlockViz.Applications.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\BlockViz.Applications.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Application\obj\Debug\net8.0-windows\ref\BlockViz.Applications.dll

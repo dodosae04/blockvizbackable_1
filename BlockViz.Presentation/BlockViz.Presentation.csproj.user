@@ -9,6 +9,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Themes\ViewTemplates.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\FactoryView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

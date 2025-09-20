@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Presentation\obj\Debug\net8.0-windows\
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Presentation\obj\Debug\net8.0-windows\
 BlockViz.Presentation
 none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
-C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Presentation\App.xaml
-7716989758
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Presentation\App.xaml
+111239418073
 2-1126149063
-11-2124558325
-266341070096
-Views\FactoryView.xaml;Views\GanttView.xaml;Views\PiView.xaml;Views\RibbonView.xaml;Views\ScheduleView.xaml;Views\ShellWindow.xaml;Views\TreeView.xaml;
+14-673953757
+277611129160
+Themes\Colors.xaml;Themes\Controls.xaml;Themes\Typography.xaml;Themes\ViewTemplates.xaml;Views\FactoryView.xaml;Views\GanttView.xaml;Views\PiView.xaml;Views\RibbonView.xaml;Views\ScheduleView.xaml;Views\ShellWindow.xaml;Views\TreeView.xaml;
 
 False
 

@@ -1,50 +1,144 @@
 using System;
-using System.ComponentModel.Composition;
-using System.Windows.Controls;
-using System.Windows;
-using BlockViz.Applications.Views;
-using System.Windows.Media.Media3D;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
+using BlockViz.Applications.Views;
 using BlockViz.Domain.Models;
 using HelixToolkit.Wpf;
-using System.Windows.Media;
 
 namespace BlockViz.Presentation.Views
 {
-    [Export, Export(typeof(IScheduleView))]
+    [Export(typeof(IScheduleView))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     public partial class ScheduleView : UserControl, IScheduleView
     {
-        public ObservableCollection<Visual3D> Visuals { get; set; }
-        public DateTime CurrentDate { get; set; }
-        public event Action<Block>? BlockClicked;
+        private ObservableCollection<Visual3D> visuals = new();
+        private DateTime currentDate;
 
-        [ImportingConstructor]
+        // FactoryView와 동일한 초기 카메라 값
+        private static readonly Point3D InitPos = new(15, 20, 30);
+        private static readonly Vector3D InitDir = new(-1, 0, -10);
+        private static readonly Vector3D InitUp = new(-1, 1000, 1);
+        private const double InitFov = 40.0;
+
         public ScheduleView()
         {
             InitializeComponent();
-            viewport.MouseLeftButtonDown += OnViewportMouseDown;
+            Loaded += (_, __) => { ApplyVisuals(); UpdateDateText(); EnsureInitialCamera(); };
         }
 
-        private void OnViewportMouseDown(object sender, MouseButtonEventArgs e)
+        // IScheduleView 구현 ----------------------------
+        public ObservableCollection<Visual3D> Visuals
         {
-            var hits = Viewport3DHelper.FindHits(viewport.Viewport, e.GetPosition(viewport));
-            if (hits.Count == 0) return;
-
-            DependencyObject v = hits[0].Visual as DependencyObject;
-            while (v != null)
+            get => visuals;
+            set
             {
-                if (v is ModelVisual3D mv)
+                if (ReferenceEquals(visuals, value)) return;
+                if (visuals != null) visuals.CollectionChanged -= Visuals_CollectionChanged;
+                visuals = value ?? new ObservableCollection<Visual3D>();
+                visuals.CollectionChanged += Visuals_CollectionChanged;
+                ApplyVisuals();
+            }
+        }
+
+        public DateTime CurrentDate
+        {
+            get => currentDate;
+            set { currentDate = value; UpdateDateText(); }
+        }
+
+        public event Action<Block>? BlockClicked;
+        // ------------------------------------------------
+
+        private void UpdateDateText()
+        {
+            if (dateText != null && currentDate != default)
+                dateText.Text = currentDate.ToString("yyyy-MM-dd");
+        }
+
+        private void Visuals_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+            => ApplyVisuals();
+
+        private void ApplyVisuals()
+        {
+            if (SceneRoot == null) return;
+            SceneRoot.Children.Clear();
+            foreach (var v in visuals)
+                if (v != null) SceneRoot.Children.Add(v);
+
+            try
+            {
+                // 동일 구도를 유지한 채로 화면만 맞춤
+                EnsureInitialCamera();
+                viewport?.ZoomExtents();
+            }
+            catch { /* 디자이너/런타임 보호 */ }
+        }
+
+        private void EnsureInitialCamera()
+        {
+            if (viewport?.Camera is PerspectiveCamera cam)
+            {
+                cam.Position = InitPos;
+                cam.LookDirection = InitDir;
+                cam.UpDirection = InitUp;
+                cam.FieldOfView = InitFov;
+            }
+        }
+
+        private void OnViewportMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (viewport == null) return;
+            var pt = e.GetPosition(viewport);
+
+            Block? foundBlock = null;
+
+            HitTestResultCallback cb = (hit) =>
+            {
+                if (hit is RayHitTestResult r)
                 {
-                    var block = BlockViz.Applications.Models.BlockProperties.GetData(mv);
-                    if (block != null)
+                    DependencyObject? d = r.VisualHit as DependencyObject;
+                    while (d != null)
                     {
-                        BlockClicked?.Invoke(block);
-                        break;
+                        // Attached DP로 블록 찾기
+                        var blk = TryGetBlockFromAttachedProperty(d);
+                        if (blk != null) { foundBlock = blk; return HitTestResultBehavior.Stop; }
+
+                        // (옵션) Tag에 붙인 경우도 지원
+                        var tag = d.GetValue(FrameworkElement.TagProperty);
+                        if (tag is Block tb) { foundBlock = tb; return HitTestResultBehavior.Stop; }
+
+                        d = VisualTreeHelper.GetParent(d);
                     }
                 }
-                v = VisualTreeHelper.GetParent(v);
+                return HitTestResultBehavior.Continue;
+            };
+
+            VisualTreeHelper.HitTest(viewport, null, cb, new PointHitTestParameters(pt));
+
+            if (foundBlock != null)
+            {
+                BlockClicked?.Invoke(foundBlock);
+                e.Handled = true;
             }
+        }
+
+        private static Block? TryGetBlockFromAttachedProperty(DependencyObject d)
+        {
+            try
+            {
+                // BlockViz.Applications.Models.BlockProperties.GetData(DependencyObject)
+                var type = Type.GetType("BlockViz.Applications.Models.BlockProperties, BlockViz.Applications");
+                var getMethod = type?.GetMethod("GetData", BindingFlags.Public | BindingFlags.Static);
+                var obj = getMethod?.Invoke(null, new object[] { d });
+                return obj as Block;
+            }
+            catch { return null; }
         }
     }
 }

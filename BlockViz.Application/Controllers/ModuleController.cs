@@ -1,26 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Waf.Applications;
+using System.Waf.Applications.Services;
+using BlockViz.Applications.Controllers;   // ★ 계약 네임스페이스 명시
 using BlockViz.Applications.ViewModels;
 using BlockViz.Applications.Views;
-using System.Waf.Applications.Services;
 
-namespace BlockViz.Applications.Controller
+namespace BlockViz.Applications.Controllers  // ★ 네임스페이스 통일 (Controllers)
 {
-    [Export(typeof(IModuleController)), Export]
-    public class ModuleController : IModuleController
+    /// <summary>
+    /// MEF로 Export되는 실제 모듈 컨트롤러.
+    /// ShellViewModel에 각 ViewModel(View)을 연결하고 Shell을 띄웁니다.
+    /// </summary>
+    [Export(typeof(IModuleController))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
+    public sealed class ModuleController : IModuleController
     {
-        private readonly RibbonViewModel _ribbonViewModel;
-        private readonly TreeViewModel _treeViewModel;
-        private readonly FactoryViewModel _factoryViewModel;
-        private readonly ScheduleViewModel _scheduleViewModel;
-        private readonly GanttViewModel _ganttViewModel;
-        private readonly PiViewModel _piViewModel;
-        private readonly ShellViewModel _shellViewModel;
+        private readonly ShellViewModel shell;
+        private readonly RibbonViewModel ribbon;
+        private readonly TreeViewModel tree;
+        private readonly FactoryViewModel factory;
+        private readonly ScheduleViewModel schedule;
+        private readonly GanttViewModel gantt;
+        private readonly PiViewModel pi;
 
         [ImportingConstructor]
         public ModuleController(
@@ -32,33 +34,35 @@ namespace BlockViz.Applications.Controller
             GanttViewModel ganttViewModel,
             PiViewModel piViewModel)
         {
-            _shellViewModel = shellViewModel ?? throw new ArgumentNullException(nameof(shellViewModel));
-            _ribbonViewModel = ribbonViewModel ?? throw new ArgumentNullException(nameof(ribbonViewModel));
-            _treeViewModel = treeViewModel ?? throw new ArgumentNullException(nameof(treeViewModel));
-            _factoryViewModel = factoryViewModel ?? throw new ArgumentNullException(nameof(factoryViewModel));
-            _scheduleViewModel = scheduleViewModel ?? throw new ArgumentNullException(nameof(scheduleViewModel));
-            _ganttViewModel = ganttViewModel ?? throw new ArgumentNullException(nameof(ganttViewModel));
-            _piViewModel = piViewModel ?? throw new ArgumentNullException(nameof(piViewModel));
+            shell = shellViewModel ?? throw new ArgumentNullException(nameof(shellViewModel));
+            ribbon = ribbonViewModel ?? throw new ArgumentNullException(nameof(ribbonViewModel));
+            tree = treeViewModel ?? throw new ArgumentNullException(nameof(treeViewModel));
+            factory = factoryViewModel ?? throw new ArgumentNullException(nameof(factoryViewModel));
+            schedule = scheduleViewModel ?? throw new ArgumentNullException(nameof(scheduleViewModel));
+            gantt = ganttViewModel ?? throw new ArgumentNullException(nameof(ganttViewModel));
+            pi = piViewModel ?? throw new ArgumentNullException(nameof(piViewModel));
         }
 
         public void Initialize()
         {
-            _shellViewModel.ContentRibbonView = _ribbonViewModel.View;
-            _shellViewModel.ContentTreeView = _treeViewModel.View;
-            _shellViewModel.ContentFactoryView = _factoryViewModel.View;
-            _shellViewModel.ContentScheduleView = _scheduleViewModel.View;
-            _shellViewModel.ContentGanttView = _ganttViewModel.View;
-            _shellViewModel.ContentPiView = _piViewModel.View;
+            // Shell의 ContentPresenter 바인딩 대상에 ViewModel.View 주입
+            shell.ContentRibbonView = ribbon.View;
+            shell.ContentTreeView = tree.View;
+            shell.ContentFactoryView = factory.View;
+            shell.ContentScheduleView = schedule.View;
+            shell.ContentGanttView = gantt.View;
+            shell.ContentPiView = pi.View;
         }
 
         public void Run()
         {
-            _shellViewModel.Show();
+            // Shell 창 표시
+            shell.Show();
         }
 
         public void Shutdown()
         {
-            _shellViewModel.Close();
+            shell.Close();
         }
     }
 }

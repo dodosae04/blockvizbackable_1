@@ -107,3 +107,81 @@ C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockVi
 C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\refint\BlockViz.Domain.dll
 C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.pdb
 C:\Users\1son2\Desktop\now BlockViz\BlockViz_0718\BlockViz_0602\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\ref\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.deps.json
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.AssemblyReference.cache
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfoInputs.cache
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfo.cs
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.CoreCompileInputs.cache
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.sourcelink.json
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\refint\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\now BlockViz\BlockViz 0811\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\ref\BlockViz.Domain.dll
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.deps.json
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.AssemblyReference.cache
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfoInputs.cache
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfo.cs
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.CoreCompileInputs.cache
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.sourcelink.json
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\refint\BlockViz.Domain.dll
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1\Desktop\now BlockViz\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\ref\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.deps.json
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.AssemblyReference.cache
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfoInputs.cache
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfo.cs
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.CoreCompileInputs.cache
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.sourcelink.json
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\refint\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1\Desktop\BlockViz0907\BlockViz0830_2\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\ref\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.deps.json
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.AssemblyReference.cache
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfoInputs.cache
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfo.cs
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.CoreCompileInputs.cache
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.sourcelink.json
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\refint\BlockViz.Domain.dll
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1\Desktop\BlockViz\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\ref\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.deps.json
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.AssemblyReference.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfoInputs.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfo.cs
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.CoreCompileInputs.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.sourcelink.json
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\refint\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\BlockViz.Domain\obj\Debug\net8.0-windows\ref\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.deps.json
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\bin\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.AssemblyReference.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfoInputs.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.AssemblyInfo.cs
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.csproj.CoreCompileInputs.cache
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.sourcelink.json
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\refint\BlockViz.Domain.dll
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\BlockViz.Domain.pdb
+C:\Users\1son2\Desktop\BlockViz0917_3backable\BlockViz\blockvizbackable_1\BlockViz.Domain\obj\Debug\net8.0-windows\ref\BlockViz.Domain.dll

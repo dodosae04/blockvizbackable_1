@@ -1,91 +1,54 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
 using System.ComponentModel.Composition.Hosting;
-using System.Configuration;
-using System.Data;
-using System.Windows;
-using System.Waf.Applications;
-using System.Waf.Applications.Services;
-using BlockViz.Applications.ViewModels;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Runtime;
-using System.Windows.Threading;
-
+using System.Waf.Applications.Services;
+using System.Windows;
+using BlockViz.Applications.Controllers;   // ★ 우리 계약
+using BlockViz.Applications.Services;
+using BlockViz.Applications.ViewModels;
 
 namespace BlockViz.Presentation
 {
-
     public partial class App : Application
     {
-        private AggregateCatalog catalog;
         private CompositionContainer container;
-        private IEnumerable<IModuleController> moduleControllers;
-
-
-        public App()
-        {
-            var profileRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                ApplicationInfo.ProductName, "ProfileOptimization");
-            Directory.CreateDirectory(profileRoot);
-            ProfileOptimization.SetProfileRoot(profileRoot);
-            ProfileOptimization.StartProfile("Startup.profile");
-        }
-
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            DispatcherUnhandledException += AppDispatcherUnhandledException;
-            AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;
-
-            catalog = new AggregateCatalog();
-            catalog.Catalogs.Add(new AssemblyCatalog(typeof(IMessageService).Assembly));
-            catalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
-            catalog.Catalogs.Add(new AssemblyCatalog(typeof(ShellViewModel).Assembly));
+            // === MEF 카탈로그: 필요한 어셈블리만 명시 ===
+            var catalog = new AggregateCatalog();
+            catalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));                 // Presentation
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(ShellViewModel).Assembly));                 // Applications (VM)
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(IMessageService).Assembly));                // Applications (Services)
 
             container = new CompositionContainer(catalog, CompositionOptions.DisableSilentRejection);
-            CompositionBatch batch = new CompositionBatch();
-            batch.AddExportedValue(container);
-            container.Compose(batch);
 
-            moduleControllers = container.GetExportedValues<IModuleController>();
-            foreach (var moduleController in moduleControllers) { moduleController.Initialize(); }
-            foreach (var moduleController in moduleControllers) { moduleController.Run(); }
-        }
-
-        protected override void OnExit(ExitEventArgs e)
-        {
-            foreach (var moduleController in moduleControllers.Reverse()) { moduleController.Shutdown(); }
-            container.Dispose();
-            catalog.Dispose();
-
-            base.OnExit(e);
-        }
-
-        private void AppDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            HandleException(e.Exception, false);
-        }
-
-        private static void AppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            HandleException(e.ExceptionObject as Exception, e.IsTerminating);
-        }
-
-        private static void HandleException(Exception e, bool isTerminating)
-        {
-            if (e == null) { return; }
-
-            Trace.TraceError(e.ToString());
-
-            if (!isTerminating)
+            try
             {
-                MessageBox.Show(string.Format(CultureInfo.CurrentCulture,
-                        Presentation.Properties.Resources.UnknownError, e)
-                    , ApplicationInfo.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
+                // ★ 우리 인터페이스로 컨트롤러 수집
+                var controllers = container.GetExportedValues<IModuleController>().ToArray();
+
+                if (controllers.Length == 0)
+                {
+                    // 안전장치: 컨트롤러가 없을 때는 Shell만 직접 띄움
+                    var shellVm = container.GetExportedValue<ShellViewModel>();
+                    var shellWindow = (Window)shellVm.View;
+                    shellWindow.DataContext = shellVm;
+                    shellWindow.Show();
+                    return;
+                }
+
+                // 정상 경로: Initialize → Run
+                foreach (var c in controllers) c.Initialize();
+                foreach (var c in controllers) c.Run();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown(-1);
             }
         }
     }

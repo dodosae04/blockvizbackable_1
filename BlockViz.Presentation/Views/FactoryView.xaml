@@ -1,22 +1,40 @@
 ﻿<UserControl x:Class="BlockViz.Presentation.Views.FactoryView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:helix="http://helix-toolkit.org/wpf">
+             xmlns:h="http://helixtoolkit.org/wpf"
+             xmlns:wpf="http://helix-toolkit.org/wpf">
     <Grid>
-        <TextBlock Text="{Binding CurrentDate, StringFormat='yyyy-MM-dd'}"
-                   FontSize="16" Margin="10"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
-        <helix:HelixViewport3D x:Name="viewport"
-                               Margin="0,40,0,0"
-                               ZoomExtentsWhenLoaded="True"
-                               ItemsSource="{Binding Visuals}">
-            <helix:DefaultLights/>
-            <helix:HelixViewport3D.Camera>
+        <!-- 상단 날짜 (ScheduleView와 동일 컨셉) -->
+        <TextBlock x:Name="dateText"
+                   Margin="6,4"
+                   FontSize="16"
+                   FontWeight="SemiBold"
+                   Foreground="Black"
+                   Text="0000-00-00" />
+
+        <!-- 3D Viewport -->
+        <wpf:HelixViewport3D x:Name="viewport"
+                           Grid.Row="1"
+                           ShowCoordinateSystem="True"
+                           ShowViewCube="False"
+                           ZoomExtentsWhenLoaded="False"
+                           MouseLeftButtonDown="OnViewportMouseLeftButtonDown">
+
+            <!-- ✅ 옛날 버전의 카메라 설정을 그대로 사용 -->
+            <wpf:HelixViewport3D.Camera>
                 <PerspectiveCamera Position="15,20,30"
-                                   LookDirection="0,-1,-1"
-                                   UpDirection="0,0,-1"
+                                   LookDirection="-1,0,-10"
+                                   UpDirection="-1,1000,1"
                                    FieldOfView="40" />
-            </helix:HelixViewport3D.Camera>
-        </helix:HelixViewport3D>
+            </wpf:HelixViewport3D.Camera>
+
+            <wpf:DefaultLights />
+            <ModelVisual3D x:Name="SceneRoot" />
+        </wpf:HelixViewport3D>
     </Grid>
 </UserControl>

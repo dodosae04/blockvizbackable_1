@@ -1,11 +1,17 @@
 ﻿<Application x:Class="BlockViz.Presentation.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:BlockViz.Presentation">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />
+                
+        <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/BlockViz.Presentation;component/Themes/Colors.xaml" />
+        <ResourceDictionary Source="/BlockViz.Presentation;component/Themes/Typography.xaml" />
+        <ResourceDictionary Source="/BlockViz.Presentation;component/Themes/Controls.xaml" />
+        
+               
+                <ResourceDictionary Source="/BlockViz.Presentation;component/Themes/ViewTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
