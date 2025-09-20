@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using BlockViz.Applications.Extensions;
 using BlockViz.Applications.Models;   // BlockProperties
 using BlockViz.Domain.Models;         // Block
 using HelixToolkit.Wpf;
@@ -63,7 +64,7 @@ namespace BlockViz.Applications.Services
 
             // 오늘 보이는 블록
             var live = (blocks ?? Array.Empty<Block>())
-                      .Where(b => b.Start <= date && date <= b.End)
+                      .Where(b => b.IsActiveOn(date))
                       .ToList();
 
             // 공장판 크기 산출 (작업장/블록 외접 경계 기준) — 기존 로직 유지

@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Collections.Generic;
 using System.Waf.Applications;
+using BlockViz.Applications.Extensions;
 using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
 using OxyPlot;
@@ -18,6 +19,7 @@ namespace BlockViz.Applications.ViewModels
     {
         private readonly IScheduleService scheduleService;
         private readonly SimulationService simulationService;
+        private readonly IBlockColorService colorService;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<PlotModel> PieModels { get; }
@@ -25,14 +27,6 @@ namespace BlockViz.Applications.ViewModels
         // 집계 기준: GlobalStart(엑셀 전체 최소 시작일) → Now
         private enum BaselineMode { GlobalStart, WorkplaceFirstStart }
         private const BaselineMode Baseline = BaselineMode.GlobalStart;
-
-        private readonly Dictionary<string, OxyColor> colorMap = new();
-        private readonly OxyColor[] palette = new[]
-        {
-            OxyColors.Red, OxyColors.Orange, OxyColors.Yellow,
-            OxyColors.LimeGreen, OxyColors.SkyBlue, OxyColors.MediumPurple,
-            OxyColors.Teal, OxyColors.Brown, OxyColors.Pink
-        };
 
         // 리본 토글 상태 주입
         private IPieOptions pieOptions;
@@ -60,10 +54,12 @@ namespace BlockViz.Applications.ViewModels
         [ImportingConstructor]
         public PiViewModel(IPiView view,
                            IScheduleService scheduleService,
-                           SimulationService simulationService) : base(view)
+                           SimulationService simulationService,
+                           IBlockColorService colorService) : base(view)
         {
             this.scheduleService = scheduleService;
             this.simulationService = simulationService;
+            this.colorService = colorService;
 
             PieModels = new ObservableCollection<PlotModel>();
 
@@ -83,13 +79,6 @@ namespace BlockViz.Applications.ViewModels
                 UpdatePie();
         }
 
-        private OxyColor GetColor(string key)
-        {
-            if (!colorMap.ContainsKey(key))
-                colorMap[key] = palette[colorMap.Count % palette.Length];
-            return colorMap[key];
-        }
-
         private void UpdatePie()
         {
             PieModels.Clear();
@@ -103,8 +92,8 @@ namespace BlockViz.Applications.ViewModels
             }
 
             DateTime globalStart = all.Min(b => b.Start);
-            DateTime globalEnd = all.Max(b => b.End);
             DateTime now = simulationService.CurrentDate;
+            DateTime globalEnd = all.Select(b => b.GetEffectiveEnd() ?? now).Max();
 
             if (now < globalStart) now = globalStart;
             if (now > globalEnd) now = globalEnd;
@@ -143,14 +132,16 @@ namespace BlockViz.Applications.ViewModels
                 }
 
                 // 1) 윈도우로 클리핑
-                var clipped = ws.Select(b => new
+                var clipped = new List<(string Name, DateTime Start, DateTime End)>();
+                foreach (var b in ws)
                 {
-                    Name = b.Name,
-                    S = b.Start < windowStart ? windowStart : b.Start,
-                    E = b.End > windowEnd ? windowEnd : b.End
-                })
-                .Where(x => x.E > x.S)
-                .ToList();
+                    var effectiveEnd = b.GetEffectiveEnd() ?? windowEnd;
+                    if (effectiveEnd < windowStart) continue;
+                    var s = b.Start < windowStart ? windowStart : b.Start;
+                    var e = effectiveEnd > windowEnd ? windowEnd : effectiveEnd;
+                    if (e <= s) continue;
+                    clipped.Add((b.Name, s, e));
+                }
 
                 if (!clipped.Any())
                 {
@@ -176,7 +167,7 @@ namespace BlockViz.Applications.ViewModels
                     double seg = (e - s).TotalDays;
                     if (seg <= 0) continue;
 
-                    var active = clipped.Where(c => c.S <= s && c.E > s).ToList();
+                    var active = clipped.Where(c => c.Start <= s && c.End > s).ToList();
                     if (active.Count == 0)
                     {
                         idleDays += seg;
@@ -184,10 +175,10 @@ namespace BlockViz.Applications.ViewModels
                     else
                     {
                         double share = seg / active.Count;
-                        foreach (var a in active)
+                        foreach (var (name, _, _) in active)
                         {
-                            if (!durByBlock.ContainsKey(a.Name)) durByBlock[a.Name] = 0;
-                            durByBlock[a.Name] += share;
+                            if (!durByBlock.ContainsKey(name)) durByBlock[name] = 0;
+                            durByBlock[name] += share;
                         }
                     }
                 }
@@ -196,7 +187,7 @@ namespace BlockViz.Applications.ViewModels
                 foreach (var kv in durByBlock.OrderByDescending(x => x.Value))
                 {
                     if (kv.Value <= 0) continue;
-                    series.Slices.Add(new PieSlice("", kv.Value) { Fill = GetColor(kv.Key) });
+                    series.Slices.Add(new PieSlice("", kv.Value) { Fill = colorService.GetOxyColor(kv.Key) });
                 }
 
                 if (idleDays > 0)

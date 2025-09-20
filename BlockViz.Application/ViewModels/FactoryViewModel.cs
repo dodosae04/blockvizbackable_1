@@ -7,7 +7,6 @@ using System.Windows.Media.Media3D;
 using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
 using System.Waf.Applications;
-using System.Collections.Generic;
 using System.Windows.Media;
 using HelixToolkit.Wpf;
 using BlockViz.Applications.Models;
@@ -22,14 +21,7 @@ namespace BlockViz.Applications.ViewModels
         private readonly IBlockArrangementService arranger;
         private readonly SimulationService simulationService;
         private readonly ISelectionService selectionService;
-
-        private readonly Dictionary<string, Brush> colorMap = new();
-        private readonly Brush[] palette = new[]
-        {
-            Brushes.Red, Brushes.Orange, Brushes.Yellow,
-            Brushes.LimeGreen, Brushes.DeepSkyBlue, Brushes.MediumPurple,
-            Brushes.Brown, Brushes.Teal, Brushes.Pink
-        };
+        private readonly IBlockColorService colorService;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -42,25 +34,33 @@ namespace BlockViz.Applications.ViewModels
             IScheduleService scheduleService,
             IBlockArrangementService arranger,
             SimulationService simulationService,
-            ISelectionService selectionService
+            ISelectionService selectionService,
+            IBlockColorService colorService
         ) : base(view)
         {
             this.scheduleService = scheduleService;
             this.arranger = arranger;
             this.simulationService = simulationService;
             this.selectionService = selectionService;
+            this.colorService = colorService;
 
             Visuals = new ObservableCollection<Visual3D>();
             view.Visuals = Visuals;
             view.CurrentDate = CurrentDate;
 
-            simulationService.PropertyChanged += OnSimulationTick;
+            simulationService.PropertyChanged += OnSimulationPropertyChanged;
             view.BlockClicked += b => selectionService.SelectedBlock = b;
+            view.TimelineValueChanged += OnTimelineValueChanged;
+
+            if (simulationService.RangeStart != DateTime.MinValue && simulationService.RangeEnd != DateTime.MinValue)
+            {
+                ViewCore.ConfigureTimeline(simulationService.RangeStart, simulationService.RangeEnd);
+            }
 
             UpdateVisuals();
         }
 
-        private void OnSimulationTick(object sender, PropertyChangedEventArgs e)
+        private void OnSimulationPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(simulationService.CurrentDate))
             {
@@ -68,13 +68,19 @@ namespace BlockViz.Applications.ViewModels
                 ViewCore.CurrentDate = CurrentDate;
                 UpdateVisuals();
             }
+            else if (e.PropertyName == nameof(simulationService.RangeStart) || e.PropertyName == nameof(simulationService.RangeEnd))
+            {
+                if (simulationService.RangeStart != DateTime.MinValue && simulationService.RangeEnd != DateTime.MinValue)
+                {
+                    ViewCore.ConfigureTimeline(simulationService.RangeStart, simulationService.RangeEnd);
+                }
+            }
         }
 
-        private Brush GetColor(string name)
+        private void OnTimelineValueChanged(object? sender, double days)
         {
-            if (!colorMap.ContainsKey(name))
-                colorMap[name] = palette[colorMap.Count % palette.Length];
-            return colorMap[name];
+            if (simulationService.RangeStart == DateTime.MinValue) return;
+            simulationService.MoveTo(simulationService.RangeStart.AddDays(days));
         }
 
         private void UpdateVisuals()
@@ -92,9 +98,10 @@ namespace BlockViz.Applications.ViewModels
                     {
                         if (child is BoxVisual3D box)
                         {
-                            var color = GetColor(b.Name);
-                            box.Material = MaterialHelper.CreateMaterial(color);
-                            box.BackMaterial = MaterialHelper.CreateMaterial(color);
+                            var brush = colorService.GetBrush(b.Name);
+                            var material = MaterialHelper.CreateMaterial(brush);
+                            box.Material = material;
+                            box.BackMaterial = material;
                         }
                     }
                 }
