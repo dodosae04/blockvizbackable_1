@@ -20,16 +20,16 @@
         <wpf:HelixViewport3D x:Name="viewport"
                            Grid.Row="1"
                            ShowCoordinateSystem="True"
-                           ShowViewCube="False"
+                           ShowViewCube="True"
                            ZoomExtentsWhenLoaded="False"
                            IsPanEnabled="False"
-                           IsZoomEnabled="False"
+                           IsZoomEnabled="True"
                            MouseLeftButtonDown="OnViewportMouseLeftButtonDown">
 
             <wpf:HelixViewport3D.Camera>
                 <PerspectiveCamera Position="15,20,30"
-                                   LookDirection="0,-1,-1"
-                                   UpDirection="0,0,-1"
+                                   LookDirection="-1,5,-10"
+                                   UpDirection="-1,1000,1"
                                    FieldOfView="40"/>
             </wpf:HelixViewport3D.Camera>
 

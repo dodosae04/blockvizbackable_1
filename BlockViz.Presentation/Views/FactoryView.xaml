@@ -22,10 +22,10 @@
         <wpf:HelixViewport3D x:Name="viewport"
                            Grid.Row="1"
                            ShowCoordinateSystem="True"
-                           ShowViewCube="False"
+                           ShowViewCube="True"
                            ZoomExtentsWhenLoaded="False"
                            IsPanEnabled="False"
-                           IsZoomEnabled="False"
+                           IsZoomEnabled="True"
                            MouseLeftButtonDown="OnViewportMouseLeftButtonDown">
 
             <!-- ✅ 옛날 버전의 카메라 설정을 그대로 사용 -->

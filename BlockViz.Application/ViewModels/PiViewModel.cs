@@ -153,7 +153,12 @@ namespace BlockViz.Applications.ViewModels
 
                 // 2) 경계점 수집
                 var ticks = new SortedSet<DateTime> { windowStart, windowEnd };
-                foreach (var c in clipped) { ticks.Add(c.S); ticks.Add(c.E); }
+                foreach (var c in clipped)
+                {
+                    // 🔧 FIX: c.S / c.E → c.Start / c.End
+                    ticks.Add(c.Start);
+                    ticks.Add(c.End);
+                }
                 var t = ticks.OrderBy(x => x).ToList();
 
                 // 3) 구간별 활성 블록 집계(겹침은 균등 분배)
@@ -231,7 +236,7 @@ namespace BlockViz.Applications.ViewModels
 
             if (pieOptions != null && pieOptions.ShowLabels)
             {
-                // {2} = Percentage (0~100 값) → 추가 곱셈 없이 정수%만 표시
+                // {2} = Percentage (0~100 값) → 정수% 표시
                 s.InsideLabelFormat = "{2:0}%";
                 s.OutsideLabelFormat = null;
             }
