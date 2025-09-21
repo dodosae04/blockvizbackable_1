@@ -90,7 +90,7 @@ namespace BlockViz.Applications.ViewModels
             this.simulationService = simulationService;
             this.colorService = colorService;
 
-            GanttModel = new PlotModel { Title = "공장 가동 스케줄" };
+            GanttModel = new PlotModel { Title = "작업장 별 블록 생산 일정" };
 
             // X축(날짜)
             dateAxis = new DateTimeAxis
