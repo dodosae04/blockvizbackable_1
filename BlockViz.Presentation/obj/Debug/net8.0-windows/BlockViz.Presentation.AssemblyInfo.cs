@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BlockViz.Presentation")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0c46438dff6d48ca55d18942f25469c218dfbe13")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ca34567a806d1c044748b80914e5861559d656c")]
 [assembly: System.Reflection.AssemblyProductAttribute("BlockViz.Presentation")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BlockViz.Presentation")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
