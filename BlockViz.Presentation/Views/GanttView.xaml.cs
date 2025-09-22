@@ -43,11 +43,7 @@ namespace BlockViz.Presentation.Views
 
             SetActiveButton(DefaultFilterKey);
 
-            hoverToolTip = new ToolTip
-            {
-                Placement = PlacementMode.Mouse,
-                StaysOpen = false
-            };
+            hoverToolTip = new ToolTip { Placement = PlacementMode.Mouse, StaysOpen = false };
 
             if (plot != null)
             {
@@ -68,21 +64,14 @@ namespace BlockViz.Presentation.Views
             set
             {
                 model = value;
-                if (plot != null)
-                {
-                    plot.Model = model;
-                }
+                if (plot != null) plot.Model = model;
             }
         }
 
         public void SetActiveWorkplace(int? workplaceId)
         {
             int key = workplaceId.HasValue ? workplaceId.Value : DefaultFilterKey;
-            if (!filterButtons.ContainsKey(key))
-            {
-                key = DefaultFilterKey;
-            }
-
+            if (!filterButtons.ContainsKey(key)) key = DefaultFilterKey;
             SetActiveButton(key);
         }
 
@@ -92,70 +81,41 @@ namespace BlockViz.Presentation.Views
             try
             {
                 foreach (var pair in filterButtons)
-                {
                     pair.Value.IsChecked = pair.Key == key;
-                }
             }
-            finally
-            {
-                suppressFilterNotification = false;
-            }
+            finally { suppressFilterNotification = false; }
         }
 
-        private void OnFilterButtonChecked(object sender, System.Windows.RoutedEventArgs e)
+        private void OnFilterButtonChecked(object sender, RoutedEventArgs e)
         {
-            if (suppressFilterNotification)
-            {
-                return;
-            }
+            if (suppressFilterNotification) return;
 
             if (sender is ToggleButton toggle)
             {
                 int key = ExtractFilterKey(toggle.Tag);
-                if (!filterButtons.ContainsKey(key))
-                {
-                    key = DefaultFilterKey;
-                }
+                if (!filterButtons.ContainsKey(key)) key = DefaultFilterKey;
 
                 suppressFilterNotification = true;
                 try
                 {
                     foreach (var pair in filterButtons)
-                    {
-                        if (!ReferenceEquals(pair.Value, toggle))
-                        {
-                            pair.Value.IsChecked = false;
-                        }
-                    }
+                        if (!ReferenceEquals(pair.Value, toggle)) pair.Value.IsChecked = false;
                 }
-                finally
-                {
-                    suppressFilterNotification = false;
-                }
+                finally { suppressFilterNotification = false; }
 
                 var workplaceId = key == DefaultFilterKey ? (int?)null : key;
                 WorkplaceFilterRequested?.Invoke(this, new WorkplaceFilterRequestedEventArgs(workplaceId));
             }
         }
 
-        private void OnFilterButtonUnchecked(object sender, System.Windows.RoutedEventArgs e)
+        private void OnFilterButtonUnchecked(object sender, RoutedEventArgs e)
         {
-            if (suppressFilterNotification)
-            {
-                return;
-            }
-
+            if (suppressFilterNotification) return;
             if (sender is ToggleButton toggle)
             {
                 suppressFilterNotification = true;
-                try
-                {
-                    toggle.IsChecked = true;
-                }
-                finally
-                {
-                    suppressFilterNotification = false;
-                }
+                try { toggle.IsChecked = true; }
+                finally { suppressFilterNotification = false; }
             }
         }
 
@@ -165,10 +125,7 @@ namespace BlockViz.Presentation.Views
             UpdateTooltip(blockName);
         }
 
-        private void OnPlotMouseLeave(object sender, MouseEventArgs e)
-        {
-            UpdateTooltip(null);
-        }
+        private void OnPlotMouseLeave(object sender, MouseEventArgs e) => UpdateTooltip(null);
 
         private void UpdateTooltip(string? content)
         {
@@ -184,48 +141,31 @@ namespace BlockViz.Presentation.Views
                 hoverToolTip.Content = content;
                 currentTooltipContent = content;
             }
-
-            if (!hoverToolTip.IsOpen)
-            {
-                hoverToolTip.IsOpen = true;
-            }
+            if (!hoverToolTip.IsOpen) hoverToolTip.IsOpen = true;
         }
 
         private string? FindBlockName(Point position)
         {
-            if (plot?.Model is not PlotModel model)
-            {
-                return null;
-            }
+            if (plot?.Model is not PlotModel model) return null;
 
             var barSeries = model.Series.OfType<IntervalBarSeries>().FirstOrDefault();
-            if (barSeries == null)
-            {
-                return null;
-            }
+            if (barSeries == null) return null;
 
             var dateAxis = model.Axes.OfType<DateTimeAxis>().FirstOrDefault();
             var categoryAxis = model.Axes.OfType<CategoryAxis>().FirstOrDefault();
-            if (dateAxis == null || categoryAxis == null)
-            {
-                return null;
-            }
+            if (dateAxis == null || categoryAxis == null) return null;
 
             var plotArea = model.PlotArea;
             if (position.X < plotArea.Left || position.X > plotArea.Right ||
-                position.Y < plotArea.Top || position.Y > plotArea.Bottom)
-            {
-                return null;
-            }
+                position.Y < plotArea.Top || position.Y > plotArea.Bottom) return null;
 
-            var screenPoint = new ScreenPoint(position.X, position.Y);
+            var sp = new ScreenPoint(position.X, position.Y);
 
             foreach (var item in barSeries.Items)
             {
-                if (item?.Tag is not string name || string.IsNullOrWhiteSpace(name))
-                {
-                    continue;
-                }
+                // ← Tag 대신 Title 사용
+                var name = (item as IntervalBarItem)?.Title;
+                if (string.IsNullOrWhiteSpace(name)) continue;
 
                 double x0 = dateAxis.Transform(item.Start);
                 double x1 = dateAxis.Transform(item.End);
@@ -233,33 +173,19 @@ namespace BlockViz.Presentation.Views
                 double y0 = categoryAxis.Transform(item.CategoryIndex - half);
                 double y1 = categoryAxis.Transform(item.CategoryIndex + half);
 
-                double minX = Math.Min(x0, x1);
-                double maxX = Math.Max(x0, x1);
-                double minY = Math.Min(y0, y1);
-                double maxY = Math.Max(y0, y1);
+                double minX = Math.Min(x0, x1), maxX = Math.Max(x0, x1);
+                double minY = Math.Min(y0, y1), maxY = Math.Max(y0, y1);
 
-                if (screenPoint.X >= minX && screenPoint.X <= maxX &&
-                    screenPoint.Y >= minY && screenPoint.Y <= maxY)
-                {
+                if (sp.X >= minX && sp.X <= maxX && sp.Y >= minY && sp.Y <= maxY)
                     return name;
-                }
             }
-
             return null;
         }
 
         private static int ExtractFilterKey(object tag)
         {
-            if (tag is int intValue)
-            {
-                return intValue;
-            }
-
-            if (tag is string stringValue && int.TryParse(stringValue, out int parsed))
-            {
-                return parsed;
-            }
-
+            if (tag is int i) return i;
+            if (tag is string s && int.TryParse(s, out int p)) return p;
             return DefaultFilterKey;
         }
     }
