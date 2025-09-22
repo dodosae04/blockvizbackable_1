@@ -250,7 +250,7 @@ namespace BlockViz.Applications.ViewModels
             return $"{ratio * 100:0.#}%";
         }
 
-        private sealed class PropertyNode
+        public sealed class PropertyNode
         {
             public PropertyNode(string name, string? value = null, IEnumerable<PropertyNode>? children = null)
             {
