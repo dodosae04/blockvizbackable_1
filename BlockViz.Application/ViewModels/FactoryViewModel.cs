@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Windows.Media.Media3D;
+using BlockViz.Applications.Extensions;
 using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
 using System.Waf.Applications;
@@ -98,7 +99,8 @@ namespace BlockViz.Applications.ViewModels
                     {
                         if (child is BoxVisual3D box)
                         {
-                            var brush = colorService.GetBrush(b.Name);
+                            var displayName = b.GetDisplayName();
+                            var brush = colorService.GetBrush(displayName);
                             var material = MaterialHelper.CreateMaterial(brush);
                             box.Material = material;
                             box.BackMaterial = material;

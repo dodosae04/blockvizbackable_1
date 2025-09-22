@@ -6,7 +6,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using BlockViz.Applications.Extensions;
+using BlockViz.Applications.Models;
 using BlockViz.Applications.Views;
+using BlockViz.Domain.Models;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -24,6 +27,7 @@ namespace BlockViz.Presentation.Views
         private readonly ToolTip hoverToolTip;
         private string? currentTooltipContent;
         private bool suppressFilterNotification;
+        private bool suppressExpandNotification;
         private PlotModel model;
 
         public GanttView()
@@ -42,6 +46,7 @@ namespace BlockViz.Presentation.Views
             };
 
             SetActiveButton(DefaultFilterKey);
+            SetExpandAllState(false);
 
             hoverToolTip = new ToolTip { Placement = PlacementMode.Mouse, StaysOpen = false };
 
@@ -53,10 +58,15 @@ namespace BlockViz.Presentation.Views
                 ToolTipService.SetShowDuration(plot, int.MaxValue);
                 plot.MouseMove += OnPlotMouseMove;
                 plot.MouseLeave += OnPlotMouseLeave;
+                plot.MouseDown += OnPlotMouseDown;
             }
         }
 
         public event EventHandler<WorkplaceFilterRequestedEventArgs> WorkplaceFilterRequested;
+
+        public event EventHandler<bool> ExpandAllChanged;
+
+        public event Action<Block> BlockClicked;
 
         public PlotModel GanttModel
         {
@@ -73,6 +83,22 @@ namespace BlockViz.Presentation.Views
             int key = workplaceId.HasValue ? workplaceId.Value : DefaultFilterKey;
             if (!filterButtons.ContainsKey(key)) key = DefaultFilterKey;
             SetActiveButton(key);
+        }
+
+        public void SetExpandAllState(bool isExpanded)
+        {
+            suppressExpandNotification = true;
+            try
+            {
+                if (expandAllButton != null)
+                {
+                    expandAllButton.IsChecked = isExpanded;
+                }
+            }
+            finally
+            {
+                suppressExpandNotification = false;
+            }
         }
 
         private void SetActiveButton(int key)
@@ -119,13 +145,38 @@ namespace BlockViz.Presentation.Views
             }
         }
 
+        private void OnExpandAllChecked(object sender, RoutedEventArgs e)
+        {
+            if (suppressExpandNotification) return;
+            ExpandAllChanged?.Invoke(this, true);
+        }
+
+        private void OnExpandAllUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (suppressExpandNotification) return;
+            ExpandAllChanged?.Invoke(this, false);
+        }
+
         private void OnPlotMouseMove(object sender, MouseEventArgs e)
         {
-            var blockName = FindBlockName(e.GetPosition(plot));
-            UpdateTooltip(blockName);
+            var item = FindBlockItem(e.GetPosition(plot));
+            var displayName = item?.Block.GetDisplayName();
+            UpdateTooltip(displayName);
         }
 
         private void OnPlotMouseLeave(object sender, MouseEventArgs e) => UpdateTooltip(null);
+
+        private void OnPlotMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+
+            var item = FindBlockItem(e.GetPosition(plot));
+            if (item?.Block != null)
+            {
+                BlockClicked?.Invoke(item.Block);
+                e.Handled = true;
+            }
+        }
 
         private void UpdateTooltip(string? content)
         {
@@ -144,7 +195,7 @@ namespace BlockViz.Presentation.Views
             if (!hoverToolTip.IsOpen) hoverToolTip.IsOpen = true;
         }
 
-        private string? FindBlockName(Point position)
+        private BlockIntervalBarItem? FindBlockItem(Point position)
         {
             if (plot?.Model is not PlotModel model) return null;
 
@@ -161,12 +212,8 @@ namespace BlockViz.Presentation.Views
 
             var sp = new ScreenPoint(position.X, position.Y);
 
-            foreach (var item in barSeries.Items)
+            foreach (var item in barSeries.Items.OfType<BlockIntervalBarItem>())
             {
-                // ← Tag 대신 Title 사용
-                var name = (item as IntervalBarItem)?.Title;
-                if (string.IsNullOrWhiteSpace(name)) continue;
-
                 double x0 = dateAxis.Transform(item.Start);
                 double x1 = dateAxis.Transform(item.End);
                 double half = barSeries.BarWidth / 2.0;
@@ -177,7 +224,7 @@ namespace BlockViz.Presentation.Views
                 double minY = Math.Min(y0, y1), maxY = Math.Max(y0, y1);
 
                 if (sp.X >= minX && sp.X <= maxX && sp.Y >= minY && sp.Y <= maxY)
-                    return name;
+                    return item;
             }
             return null;
         }

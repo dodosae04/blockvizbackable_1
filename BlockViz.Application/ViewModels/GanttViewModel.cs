@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Waf.Applications;
 using BlockViz.Applications.Extensions;
+using BlockViz.Applications.Models;
 using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
 using BlockViz.Domain.Models;
@@ -23,8 +24,10 @@ namespace BlockViz.Applications.ViewModels
         private readonly IScheduleService scheduleService;
         private readonly SimulationService simulationService;
         private readonly IBlockColorService colorService;
+        private readonly ISelectionService selectionService;
 
         private int? selectedWorkplaceId;
+        private bool expandAll;
 
         public PlotModel GanttModel { get; }
 
@@ -69,11 +72,13 @@ namespace BlockViz.Applications.ViewModels
             IGanttView view,
             IScheduleService scheduleService,
             SimulationService simulationService,
-            IBlockColorService colorService) : base(view)
+            IBlockColorService colorService,
+            ISelectionService selectionService) : base(view)
         {
             this.scheduleService = scheduleService;
             this.simulationService = simulationService;
             this.colorService = colorService;
+            this.selectionService = selectionService;
 
             GanttModel = new PlotModel { Title = "작업장 별 블록 생산 일정" };
 
@@ -115,10 +120,13 @@ namespace BlockViz.Applications.ViewModels
             };
 
             view.WorkplaceFilterRequested += OnWorkplaceFilterRequested;
+            view.ExpandAllChanged += OnExpandAllChanged;
+            view.BlockClicked += b => this.selectionService.SelectedBlock = b;
 
             UpdateGantt();
             view.GanttModel = GanttModel;
             view.SetActiveWorkplace(selectedWorkplaceId);
+            view.SetExpandAllState(expandAll);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -134,6 +142,12 @@ namespace BlockViz.Applications.ViewModels
             UpdateGantt();
         }
 
+        private void OnExpandAllChanged(object sender, bool isExpanded)
+        {
+            expandAll = isExpanded;
+            UpdateGantt();
+        }
+
         private void UpdateGantt()
         {
             GanttModel.Series.Clear();
@@ -141,7 +155,6 @@ namespace BlockViz.Applications.ViewModels
             var blocks = scheduleService.GetAllBlocks()?.ToList() ?? new List<Block>();
             var now = simulationService.CurrentDate;
 
-            // 유효 시작이 있는 블록만 대상으로 전체 기간 파악( MinValue/MaxValue, default 제외 )
             var valid = blocks.Where(b =>
                 b != null &&
                 b.Start != default &&
@@ -161,12 +174,10 @@ namespace BlockViz.Applications.ViewModels
             }
             else
             {
-                // 데이터 없으면 오늘 ~ 내일
                 globalStart = now;
                 globalEnd = now.AddDays(1);
             }
 
-            // 보정 & 경계 정리
             if (globalStart > globalEnd) (globalStart, globalEnd) = (globalEnd, globalStart);
             if (globalStart == globalEnd) globalEnd = SafeAddDays(globalStart, 1);
 
@@ -176,7 +187,6 @@ namespace BlockViz.Applications.ViewModels
             if (now < globalStart) now = globalStart;
             if (now > globalEnd) now = globalEnd;
 
-            // 축 패딩(안전 가드 사용) — 데이터가 1~2일이어도 최소 3일 패딩을 시도하되, 경계 밖으로 나가지 않게 clamp
             var totalDays = Math.Max(1.0, (globalEnd - globalStart).TotalDays);
             var padDays = Math.Max(3.0, totalDays * 0.01);
 
@@ -186,26 +196,14 @@ namespace BlockViz.Applications.ViewModels
             dateAxis.Minimum = DateTimeAxis.ToDouble(axisMin);
             dateAxis.Maximum = DateTimeAxis.ToDouble(axisMax);
 
-            // ── 작업장별 세그먼트 구성
-            var byWp = blocks.GroupBy(b => b.DeployWorkplace)
-                             .ToDictionary(g => g.Key, g => g.OrderBy(x => x.Start).ToList());
+            var byWp = blocks
+                .Where(b => b != null)
+                .GroupBy(b => b.DeployWorkplace)
+                .ToDictionary(g => g.Key, g => g.OrderBy(x => x.Start).ToList());
 
             var visibleWp = GetVisibleWorkplaces().ToList();
-            catAxis.Labels.Clear();
-            foreach (var id in visibleWp) catAxis.Labels.Add($"작업장 {id}");
+            var categoryLabels = new List<string>();
 
-            // 현재일 수직선
-            var nowLine = new LineSeries
-            {
-                Color = OxyColors.Gray,
-                StrokeThickness = 1,
-                LineStyle = LineStyle.Solid
-            };
-            nowLine.Points.Add(new DataPoint(DateTimeAxis.ToDouble(now), -0.5));
-            nowLine.Points.Add(new DataPoint(DateTimeAxis.ToDouble(now), visibleWp.Count - 0.5));
-            GanttModel.Series.Add(nowLine);
-
-            // 막대 시리즈(배경 + 실제 블록)
             var series = new IntervalBarSeries
             {
                 StrokeColor = OxyColors.Black,
@@ -215,53 +213,161 @@ namespace BlockViz.Applications.ViewModels
                 TrackerFormatString = "{0}\n{1}\n시작: {2:yyyy-MM-dd}\n끝: {3:yyyy-MM-dd}"
             };
 
-            for (int cat = 0; cat < visibleWp.Count; cat++)
+            int categoryIndex = 0;
+            foreach (var wpId in visibleWp)
             {
-                int wpId = visibleWp[cat];
+                var label = $"작업장 {wpId}";
+                var blocksInWorkplace = byWp.TryGetValue(wpId, out var list) ? list : new List<Block>();
+                bool isExpanded = expandAll || (selectedWorkplaceId.HasValue && selectedWorkplaceId.Value == wpId);
 
-                // 배경(가동 영역: globalStart~now)
-                series.Items.Add(new IntervalBarItem
+                if (!isExpanded)
                 {
-                    CategoryIndex = cat,
-                    Start = DateTimeAxis.ToDouble(globalStart),
-                    End = DateTimeAxis.ToDouble(now),
-                    Color = OxyColors.LightGray
-                });
+                    categoryLabels.Add(label);
+                    AddBackground(series, categoryIndex, globalStart, now);
+                    var intervals = BuildIntervals(blocksInWorkplace, now);
+                    AddBlockItems(series, categoryIndex, intervals);
+                    categoryIndex++;
+                    continue;
+                }
 
-                if (!byWp.TryGetValue(wpId, out var list) || list.Count == 0) continue;
-
-                foreach (var b in list)
+                var layers = BuildLayeredIntervals(blocksInWorkplace, now);
+                if (layers.Count == 0)
                 {
-                    // 미래 시작은 표시하지 않음
-                    if (b.Start >= now) continue;
+                    categoryLabels.Add(label);
+                    AddBackground(series, categoryIndex, globalStart, now);
+                    categoryIndex++;
+                    continue;
+                }
 
-                    var effEnd = b.GetEffectiveEnd() ?? now;
-                    var end = effEnd > now ? now : effEnd;
-                    if (end <= b.Start) continue;
-
-                    series.Items.Add(new IntervalBarItem
-                    {
-                        CategoryIndex = cat,
-                        Start = DateTimeAxis.ToDouble(b.Start),
-                        End = DateTimeAxis.ToDouble(end),
-                        Color = colorService.GetOxyColor(b.Name), // 색상 동기화
-                        Title = b.Name                              // ← 블록명 저장(Tag 대신)
-                    });
+                for (int layer = 0; layer < layers.Count; layer++)
+                {
+                    categoryLabels.Add(layer == 0 ? label : string.Empty);
+                    AddBackground(series, categoryIndex, globalStart, now);
+                    AddBlockItems(series, categoryIndex, layers[layer]);
+                    categoryIndex++;
                 }
             }
 
+            catAxis.Labels.Clear();
+            foreach (var label in categoryLabels)
+            {
+                catAxis.Labels.Add(label);
+            }
+
+            var nowLine = new LineSeries
+            {
+                Color = OxyColors.Gray,
+                StrokeThickness = 1,
+                LineStyle = LineStyle.Solid
+            };
+            nowLine.Points.Add(new DataPoint(DateTimeAxis.ToDouble(now), -0.5));
+            nowLine.Points.Add(new DataPoint(DateTimeAxis.ToDouble(now), categoryLabels.Count - 0.5));
+
+            GanttModel.Series.Add(nowLine);
             GanttModel.Series.Add(series);
             GanttModel.InvalidatePlot(true);
         }
 
+        private void AddBackground(IntervalBarSeries series, int categoryIndex, DateTime start, DateTime end)
+        {
+            series.Items.Add(new IntervalBarItem
+            {
+                CategoryIndex = categoryIndex,
+                Start = DateTimeAxis.ToDouble(start),
+                End = DateTimeAxis.ToDouble(end),
+                Color = OxyColors.LightGray
+            });
+        }
+
+        private void AddBlockItems(IntervalBarSeries series, int categoryIndex, IEnumerable<(Block Block, DateTime Start, DateTime End)> intervals)
+        {
+            foreach (var interval in intervals)
+            {
+                var block = interval.Block;
+                if (block == null) continue;
+
+                var displayName = block.GetDisplayName();
+                var item = new BlockIntervalBarItem(block)
+                {
+                    CategoryIndex = categoryIndex,
+                    Start = DateTimeAxis.ToDouble(interval.Start),
+                    End = DateTimeAxis.ToDouble(interval.End),
+                    Color = colorService.GetOxyColor(displayName)
+                };
+                series.Items.Add(item);
+            }
+        }
+
+        private static List<(Block Block, DateTime Start, DateTime End)> BuildIntervals(IEnumerable<Block> blocks, DateTime now)
+        {
+            var result = new List<(Block Block, DateTime Start, DateTime End)>();
+
+            foreach (var block in blocks)
+            {
+                if (block == null) continue;
+                if (block.Start >= now) continue;
+
+                var effectiveEnd = block.GetEffectiveEnd() ?? now;
+                var end = effectiveEnd > now ? now : effectiveEnd;
+                if (end <= block.Start) continue;
+
+                result.Add((block, block.Start, end));
+            }
+
+            return result;
+        }
+
+        private static List<List<(Block Block, DateTime Start, DateTime End)>> BuildLayeredIntervals(IEnumerable<Block> blocks, DateTime now)
+        {
+            var intervals = BuildIntervals(blocks, now)
+                .OrderBy(i => i.Start)
+                .ThenBy(i => i.End)
+                .ToList();
+
+            var layers = new List<List<(Block Block, DateTime Start, DateTime End)>>();
+            var layerEnds = new List<DateTime>();
+
+            foreach (var interval in intervals)
+            {
+                int targetLayer = -1;
+                for (int i = 0; i < layerEnds.Count; i++)
+                {
+                    if (interval.Start >= layerEnds[i])
+                    {
+                        targetLayer = i;
+                        break;
+                    }
+                }
+
+                if (targetLayer == -1)
+                {
+                    targetLayer = layers.Count;
+                    layers.Add(new List<(Block Block, DateTime Start, DateTime End)>());
+                    layerEnds.Add(interval.End);
+                }
+                else
+                {
+                    layerEnds[targetLayer] = interval.End;
+                }
+
+                layers[targetLayer].Add(interval);
+            }
+
+            return layers;
+        }
+
         private IEnumerable<int> GetVisibleWorkplaces()
         {
-            if (selectedWorkplaceId.HasValue && WorkplaceIds.Contains(selectedWorkplaceId.Value))
+            if (!expandAll && selectedWorkplaceId.HasValue && WorkplaceIds.Contains(selectedWorkplaceId.Value))
             {
                 yield return selectedWorkplaceId.Value;
                 yield break;
             }
-            foreach (var id in WorkplaceIds) yield return id;
+
+            foreach (var id in WorkplaceIds)
+            {
+                yield return id;
+            }
         }
     }
 }

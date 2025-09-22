@@ -129,7 +129,8 @@ namespace BlockViz.Applications.ViewModels
                     var s = b.Start < windowStart ? windowStart : b.Start;
                     var e = effectiveEnd > windowEnd ? windowEnd : effectiveEnd;
                     if (e <= s) continue;
-                    clipped.Add((b.Name, s, e));
+                    var displayName = b.GetDisplayName();
+                    clipped.Add((displayName, s, e));
                 }
 
                 if (!clipped.Any())
