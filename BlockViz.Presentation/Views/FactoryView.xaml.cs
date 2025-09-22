@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -23,6 +24,8 @@ namespace BlockViz.Presentation.Views
         private DateTime timelineEnd;
         private bool timelineConfigured;
         private bool suppressTimelineEvent;
+        private readonly ToolTip hoverToolTip;
+        private string? currentTooltipContent;
 
         // 옛날 카메라와 동일한 초기값(필요 시 ZoomExtents 후에도 자세 유지)
         private static readonly Point3D InitPos = new(15, 20, 30);
@@ -39,6 +42,22 @@ namespace BlockViz.Presentation.Views
                 UpdateDateText();
                 EnsureInitialCamera();
             };
+
+            hoverToolTip = new ToolTip
+            {
+                Placement = PlacementMode.Mouse,
+                StaysOpen = false
+            };
+
+            if (viewport != null)
+            {
+                hoverToolTip.PlacementTarget = viewport;
+                ToolTipService.SetInitialShowDelay(viewport, 0);
+                ToolTipService.SetBetweenShowDelay(viewport, 0);
+                ToolTipService.SetShowDuration(viewport, int.MaxValue);
+                viewport.MouseMove += OnViewportMouseMove;
+                viewport.MouseLeave += OnViewportMouseLeave;
+            }
         }
 
         // ===== IFactoryView 구현 =====
@@ -149,11 +168,63 @@ namespace BlockViz.Presentation.Views
         private void OnViewportMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (viewport == null) return;
-            var pt = e.GetPosition(viewport);
+
+            var foundBlock = HitTestBlock(e.GetPosition(viewport));
+
+            if (foundBlock != null)
+            {
+                BlockClicked?.Invoke(foundBlock);
+                e.Handled = true;
+            }
+        }
+
+        private void TimelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (!timelineConfigured || suppressTimelineEvent) return;
+            TimelineValueChanged?.Invoke(this, e.NewValue);
+        }
+
+        private void OnViewportMouseMove(object sender, MouseEventArgs e)
+        {
+            if (viewport == null) return;
+
+            var block = HitTestBlock(e.GetPosition(viewport));
+            UpdateTooltip(block?.Name);
+        }
+
+        private void OnViewportMouseLeave(object sender, MouseEventArgs e)
+        {
+            UpdateTooltip(null);
+        }
+
+        private void UpdateTooltip(string? content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                currentTooltipContent = null;
+                hoverToolTip.IsOpen = false;
+                return;
+            }
+
+            if (!string.Equals(currentTooltipContent, content, StringComparison.Ordinal))
+            {
+                hoverToolTip.Content = content;
+                currentTooltipContent = content;
+            }
+
+            if (!hoverToolTip.IsOpen)
+            {
+                hoverToolTip.IsOpen = true;
+            }
+        }
+
+        private Block? HitTestBlock(Point pt)
+        {
+            if (viewport == null) return null;
 
             Block? foundBlock = null;
 
-            HitTestResultCallback cb = (hit) =>
+            HitTestResultCallback cb = hit =>
             {
                 if (hit is RayHitTestResult r)
                 {
@@ -167,7 +238,7 @@ namespace BlockViz.Presentation.Views
                             return HitTestResultBehavior.Stop;
                         }
 
-                        var tag = d.GetValue(System.Windows.FrameworkElement.TagProperty);
+                        var tag = d.GetValue(FrameworkElement.TagProperty);
                         if (tag is Block tagBlock)
                         {
                             foundBlock = tagBlock;
@@ -177,22 +248,12 @@ namespace BlockViz.Presentation.Views
                         d = VisualTreeHelper.GetParent(d);
                     }
                 }
+
                 return HitTestResultBehavior.Continue;
             };
 
             VisualTreeHelper.HitTest(viewport, null, cb, new PointHitTestParameters(pt));
-
-            if (foundBlock != null)
-            {
-                BlockClicked?.Invoke(foundBlock);
-                e.Handled = true;
-            }
-        }
-
-        private void TimelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (!timelineConfigured || suppressTimelineEvent) return;
-            TimelineValueChanged?.Invoke(this, e.NewValue);
+            return foundBlock;
         }
 
         private static Block? TryGetBlockFromAttachedProperty(DependencyObject d)
@@ -208,3 +269,4 @@ namespace BlockViz.Presentation.Views
         }
     }
 }
+

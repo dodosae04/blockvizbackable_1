@@ -17,7 +17,10 @@
                         <Border Background="White" Padding="10" Margin="6" CornerRadius="10">
                             <StackPanel Width="260">
                                 <TextBlock Text="{Binding Title}" Margin="0,0,0,6" />
-                                <oxy:PlotView Model="{Binding}" Height="200" />
+                                <oxy:PlotView Model="{Binding}"
+                                              Height="200"
+                                              Loaded="OnPiePlotLoaded"
+                                              Unloaded="OnPiePlotUnloaded" />
                                 <TextBlock Foreground="#64748B" FontSize="11"
                                            Text="* 리본의 ‘레이블/퍼센트 표시’로 토글" />
                             </StackPanel>

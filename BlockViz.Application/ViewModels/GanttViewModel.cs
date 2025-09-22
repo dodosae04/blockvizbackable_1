@@ -100,6 +100,11 @@ namespace BlockViz.Applications.ViewModels
                 MinorGridlineStyle = LineStyle.Dot,
                 Title = "기간",
                 StringFormat = "yyyy-MM-dd",
+                IntervalType = DateTimeIntervalType.Days,
+                MinorIntervalType = DateTimeIntervalType.Days,
+                MajorStep = 1,
+                MinorStep = 1,
+                Angle = -45,
                 IsZoomEnabled = false,
                 IsPanEnabled = false,
                 MinimumPadding = 0.0,
@@ -291,7 +296,8 @@ namespace BlockViz.Applications.ViewModels
                         CategoryIndex = categoryIndex,
                         Start = DateTimeAxis.ToDouble(segment.Start),
                         End = DateTimeAxis.ToDouble(segment.End),
-                        Color = colorService.GetOxyColor(segment.Block.Name) // 색상 동기화
+                        Color = colorService.GetOxyColor(segment.Block.Name), // 색상 동기화
+                        Tag = segment.Block.Name
                     });
                 }
             }
