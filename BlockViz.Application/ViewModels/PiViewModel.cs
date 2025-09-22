@@ -76,10 +76,11 @@ namespace BlockViz.Applications.ViewModels
             PieModels.Clear();
 
             var all = scheduleService.GetAllBlocks().ToList();
+            var showLabels = pieOptions?.ShowLabels ?? false;
             if (!all.Any())
             {
                 for (int wp = 1; wp <= 6; wp++)
-                    PieModels.Add(BuildIdleOnlyModel(wp, 1.0));
+                    PieModels.Add(BuildIdleOnlyModel(wp, 1.0, showLabels));
                 return;
             }
 
@@ -100,11 +101,13 @@ namespace BlockViz.Applications.ViewModels
                 DateTime windowEnd = now;
 
                 var model = NewPlotModelWithoutLegend($"작업장 {wp}");
-                var series = NewPieSeriesWithToggle();
+                var series = NewPieSeriesWithToggle(showLabels);
 
                 if (windowEnd <= windowStart)
                 {
-                    series.Slices.Add(new PieSlice("", 1.0) { Fill = OxyColors.LightGray });
+                    var emptySlice = new PieSlice("", 1.0) { Fill = OxyColors.LightGray };
+                    ConfigureSliceLabel(emptySlice, string.Empty, 1.0, showLabels);
+                    series.Slices.Add(emptySlice);
                     model.Series.Add(series);
                     PieModels.Add(model);
                     continue;
@@ -114,7 +117,9 @@ namespace BlockViz.Applications.ViewModels
 
                 if (!ws.Any())
                 {
-                    series.Slices.Add(new PieSlice("", totalDays) { Fill = OxyColors.LightGray });
+                    var idleSlice = new PieSlice("", totalDays) { Fill = OxyColors.LightGray };
+                    ConfigureSliceLabel(idleSlice, string.Empty, Math.Max(totalDays, 1.0), showLabels);
+                    series.Slices.Add(idleSlice);
                     model.Series.Add(series);
                     PieModels.Add(model);
                     continue;
@@ -135,7 +140,9 @@ namespace BlockViz.Applications.ViewModels
 
                 if (!clipped.Any())
                 {
-                    series.Slices.Add(new PieSlice("", totalDays) { Fill = OxyColors.LightGray });
+                    var idleSlice = new PieSlice("", totalDays) { Fill = OxyColors.LightGray };
+                    ConfigureSliceLabel(idleSlice, string.Empty, Math.Max(totalDays, 1.0), showLabels);
+                    series.Slices.Add(idleSlice);
                     model.Series.Add(series);
                     PieModels.Add(model);
                     continue;
@@ -177,21 +184,37 @@ namespace BlockViz.Applications.ViewModels
                     }
                 }
 
-                // 파이 조각: Label에 블록명 저장(툴팁용), 화면 라벨은 토글에 따라 퍼센트만/숨김
+                // 파이 조각: 라벨 토글에 따라 블록명/퍼센트를 구성
+                double totalForLabels = durByBlock.Sum(x => Math.Max(0.0, x.Value));
+                if (idleDays > 0)
+                    totalForLabels += idleDays;
+                if (totalForLabels <= 0)
+                    totalForLabels = Math.Max(totalDays, 1.0);
+
                 foreach (var kv in durByBlock.OrderByDescending(x => x.Value))
                 {
                     if (kv.Value <= 0) continue;
-                    series.Slices.Add(new PieSlice(kv.Key, kv.Value)
+                    var slice = new PieSlice(kv.Key, kv.Value)
                     {
                         Fill = colorService.GetOxyColor(kv.Key)
-                    });
+                    };
+                    ConfigureSliceLabel(slice, kv.Key, totalForLabels, showLabels);
+                    series.Slices.Add(slice);
                 }
 
                 if (idleDays > 0)
-                    series.Slices.Add(new PieSlice("", idleDays) { Fill = OxyColors.LightGray });
+                {
+                    var idleSlice = new PieSlice("", idleDays) { Fill = OxyColors.LightGray };
+                    ConfigureSliceLabel(idleSlice, string.Empty, totalForLabels, showLabels);
+                    series.Slices.Add(idleSlice);
+                }
 
                 if (series.Slices.Count == 0)
-                    series.Slices.Add(new PieSlice("", totalDays) { Fill = OxyColors.LightGray });
+                {
+                    var fallback = new PieSlice("", totalDays) { Fill = OxyColors.LightGray };
+                    ConfigureSliceLabel(fallback, string.Empty, Math.Max(totalDays, 1.0), showLabels);
+                    series.Slices.Add(fallback);
+                }
 
                 model.Series.Add(series);
                 PieModels.Add(model);
@@ -203,46 +226,45 @@ namespace BlockViz.Applications.ViewModels
             => new PlotModel { Title = title, IsLegendVisible = false };
 
         // 라벨/퍼센트 토글(퍼센트는 정수 “42%”)
-        private PieSeries NewPieSeriesWithToggle()
+        private static PieSeries NewPieSeriesWithToggle(bool showLabels)
         {
-            var s = new PieSeries
+            return new PieSeries
             {
                 StrokeThickness = 0.5,
                 AngleSpan = 360,
                 StartAngle = 0,
                 TickHorizontalLength = 0,
                 TickRadialLength = 0,
-                TickLabelDistance = 0
+                TickLabelDistance = 0,
+                InsideLabelFormat = showLabels ? "{0}" : "{2:0}%",
+                OutsideLabelFormat = null
             };
-
-            if (pieOptions != null && pieOptions.ShowLabels)
-            {
-                s.InsideLabelFormat = "{2:0}%"; // {0}=Label, {1}=Value, {2}=Percentage
-                s.OutsideLabelFormat = null;
-            }
-            else
-            {
-                s.InsideLabelFormat = null;
-                s.OutsideLabelFormat = null;
-            }
-            return s;
         }
 
-        private static PlotModel BuildIdleOnlyModel(int workplaceId, double value)
+        private static void ConfigureSliceLabel(PieSlice slice, string? displayName, double totalValue, bool showLabels)
+        {
+            if (!showLabels)
+            {
+                slice.Label = displayName ?? string.Empty;
+                return;
+            }
+
+            var name = string.IsNullOrWhiteSpace(displayName) ? string.Empty : displayName.Trim();
+            var percent = totalValue > 0 ? slice.Value / totalValue * 100.0 : 0.0;
+            var percentText = $"{percent:0}%";
+
+            slice.Label = string.IsNullOrEmpty(name)
+                ? percentText
+                : $"{name}\n{percentText}";
+        }
+
+        private static PlotModel BuildIdleOnlyModel(int workplaceId, double value, bool showLabels)
         {
             var model = NewPlotModelWithoutLegend($"작업장 {workplaceId}");
-            var s = new PieSeries
-            {
-                StrokeThickness = 0.5,
-                AngleSpan = 360,
-                StartAngle = 0,
-                InsideLabelFormat = null,
-                OutsideLabelFormat = null,
-                TickHorizontalLength = 0,
-                TickRadialLength = 0,
-                TickLabelDistance = 0
-            };
-            s.Slices.Add(new PieSlice("", value) { Fill = OxyColors.LightGray });
+            var s = NewPieSeriesWithToggle(showLabels);
+            var slice = new PieSlice("", value) { Fill = OxyColors.LightGray };
+            ConfigureSliceLabel(slice, string.Empty, Math.Max(value, 1.0), showLabels);
+            s.Slices.Add(slice);
             model.Series.Add(s);
             return model;
         }

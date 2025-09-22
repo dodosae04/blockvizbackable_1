@@ -200,14 +200,14 @@ namespace BlockViz.Presentation.Views
 
         private void UpdateTooltip(Block? block)
         {
-            if (block == null)
+            var content = block?.Name;
+
+            if (string.IsNullOrWhiteSpace(content))
             {
                 currentTooltipContent = null;
                 hoverToolTip.IsOpen = false;
                 return;
             }
-
-            var content = block.GetDisplayName();
 
             if (!string.Equals(currentTooltipContent, content, StringComparison.Ordinal))
             {
