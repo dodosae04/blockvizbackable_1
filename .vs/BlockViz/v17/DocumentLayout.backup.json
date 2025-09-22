@@ -242,19 +242,8 @@
       "DocumentGroups": [
         {
           "DockedHeight": 485,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 6,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "GanttView.xaml",
-              "DocumentMoniker": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Presentation\\Views\\GanttView.xaml",
-              "RelativeDocumentMoniker": "BlockViz.Presentation\\Views\\GanttView.xaml",
-              "ToolTip": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Presentation\\Views\\GanttView.xaml",
-              "RelativeToolTip": "BlockViz.Presentation\\Views\\GanttView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-08-29T09:42:15.753Z"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -265,8 +254,7 @@
               "RelativeToolTip": "BlockViz.Application\\ViewModels\\PiViewModel.cs",
               "ViewState": "AgIAAPEAAAAAAAAAAAAowPcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-06T09:07:27.375Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-06T09:07:27.375Z"
             },
             {
               "$type": "Document",
@@ -333,12 +321,23 @@
               "Title": "TreeViewModel.cs",
               "DocumentMoniker": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Application\\ViewModels\\TreeViewModel.cs",
               "RelativeDocumentMoniker": "BlockViz.Application\\ViewModels\\TreeViewModel.cs",
-              "ToolTip": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Application\\ViewModels\\TreeViewModel.cs*",
-              "RelativeToolTip": "BlockViz.Application\\ViewModels\\TreeViewModel.cs*",
+              "ToolTip": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Application\\ViewModels\\TreeViewModel.cs",
+              "RelativeToolTip": "BlockViz.Application\\ViewModels\\TreeViewModel.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAMwBUAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-06T06:30:50.57Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "GanttView.xaml",
+              "DocumentMoniker": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Presentation\\Views\\GanttView.xaml",
+              "RelativeDocumentMoniker": "BlockViz.Presentation\\Views\\GanttView.xaml",
+              "ToolTip": "C:\\Users\\1son2\\Desktop\\BlockViz0917_3backable\\BlockViz\\blockvizbackable_1\\BlockViz.Presentation\\Views\\GanttView.xaml",
+              "RelativeToolTip": "BlockViz.Presentation\\Views\\GanttView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-08-29T09:42:15.753Z"
             },
             {
               "$type": "Document",
