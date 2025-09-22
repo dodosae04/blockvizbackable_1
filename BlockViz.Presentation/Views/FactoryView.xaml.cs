@@ -86,7 +86,7 @@ namespace BlockViz.Presentation.Views
             }
         }
 
-        public event Action<Block>? BlockClicked;
+        public event Action<Block?>? BlockClicked;
         public event EventHandler<double>? TimelineValueChanged;
         // ============================
 
@@ -172,11 +172,8 @@ namespace BlockViz.Presentation.Views
 
             var foundBlock = HitTestBlock(e.GetPosition(viewport));
 
-            if (foundBlock != null)
-            {
-                BlockClicked?.Invoke(foundBlock);
-                e.Handled = true;
-            }
+            BlockClicked?.Invoke(foundBlock);
+            e.Handled = foundBlock != null;
         }
 
         private void TimelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
