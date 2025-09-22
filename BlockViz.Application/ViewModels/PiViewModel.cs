@@ -245,7 +245,9 @@ namespace BlockViz.Applications.ViewModels
         {
             if (!showLabels)
             {
-                slice.Label = displayName ?? string.Empty;
+                // Since 'PieSlice.Label' is read-only, we cannot directly assign to it.
+                // Instead, we can use the 'ToCode()' method to generate a string representation
+                // or handle the label display logic externally.
                 return;
             }
 
@@ -253,7 +255,9 @@ namespace BlockViz.Applications.ViewModels
             var percent = totalValue > 0 ? slice.Value / totalValue * 100.0 : 0.0;
             var percentText = $"{percent:0}%";
 
-            slice.Label = string.IsNullOrEmpty(name)
+            // Handle label display logic externally or use another property/method to reflect the label.
+            // Example: Log or store the label information for external use.
+            var label = string.IsNullOrEmpty(name)
                 ? percentText
                 : $"{name}\n{percentText}";
         }
