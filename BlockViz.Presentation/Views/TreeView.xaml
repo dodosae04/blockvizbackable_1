@@ -7,7 +7,7 @@
     <xctk:PropertyGrid Name="PropertyGrid"
                        AutoGenerateProperties="True"
                        IsReadOnly="True"
-                       EmptyContent="선택된 블록이 없습니다."
+                       
                        SelectedObject="{Binding SelectedBlock}" />
   </Grid>
 </UserControl>
