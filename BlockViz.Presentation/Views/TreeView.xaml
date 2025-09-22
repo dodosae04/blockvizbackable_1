@@ -6,6 +6,8 @@
     <!-- 간단/안정: 선택만 되면 바로 표시 -->
     <xctk:PropertyGrid Name="PropertyGrid"
                        AutoGenerateProperties="True"
+                       IsReadOnly="True"
+                       EmptyContent="선택된 블록이 없습니다."
                        SelectedObject="{Binding SelectedBlock}" />
   </Grid>
 </UserControl>
