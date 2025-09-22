@@ -1,9 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using BlockViz.Applications.Views;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using PlotModel = OxyPlot.PlotModel;
 
 namespace BlockViz.Presentation.Views
@@ -15,6 +21,8 @@ namespace BlockViz.Presentation.Views
         private const int DefaultFilterKey = 0;
 
         private readonly Dictionary<int, ToggleButton> filterButtons;
+        private readonly ToolTip hoverToolTip;
+        private string? currentTooltipContent;
         private bool suppressFilterNotification;
         private PlotModel model;
 
@@ -34,6 +42,22 @@ namespace BlockViz.Presentation.Views
             };
 
             SetActiveButton(DefaultFilterKey);
+
+            hoverToolTip = new ToolTip
+            {
+                Placement = PlacementMode.Mouse,
+                StaysOpen = false
+            };
+
+            if (plot != null)
+            {
+                hoverToolTip.PlacementTarget = plot;
+                ToolTipService.SetInitialShowDelay(plot, 0);
+                ToolTipService.SetBetweenShowDelay(plot, 0);
+                ToolTipService.SetShowDuration(plot, int.MaxValue);
+                plot.MouseMove += OnPlotMouseMove;
+                plot.MouseLeave += OnPlotMouseLeave;
+            }
         }
 
         public event EventHandler<WorkplaceFilterRequestedEventArgs> WorkplaceFilterRequested;
@@ -133,6 +157,95 @@ namespace BlockViz.Presentation.Views
                     suppressFilterNotification = false;
                 }
             }
+        }
+
+        private void OnPlotMouseMove(object sender, MouseEventArgs e)
+        {
+            var blockName = FindBlockName(e.GetPosition(plot));
+            UpdateTooltip(blockName);
+        }
+
+        private void OnPlotMouseLeave(object sender, MouseEventArgs e)
+        {
+            UpdateTooltip(null);
+        }
+
+        private void UpdateTooltip(string? content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                currentTooltipContent = null;
+                hoverToolTip.IsOpen = false;
+                return;
+            }
+
+            if (!string.Equals(currentTooltipContent, content, StringComparison.Ordinal))
+            {
+                hoverToolTip.Content = content;
+                currentTooltipContent = content;
+            }
+
+            if (!hoverToolTip.IsOpen)
+            {
+                hoverToolTip.IsOpen = true;
+            }
+        }
+
+        private string? FindBlockName(Point position)
+        {
+            if (plot?.Model is not PlotModel model)
+            {
+                return null;
+            }
+
+            var barSeries = model.Series.OfType<IntervalBarSeries>().FirstOrDefault();
+            if (barSeries == null)
+            {
+                return null;
+            }
+
+            var dateAxis = model.Axes.OfType<DateTimeAxis>().FirstOrDefault();
+            var categoryAxis = model.Axes.OfType<CategoryAxis>().FirstOrDefault();
+            if (dateAxis == null || categoryAxis == null)
+            {
+                return null;
+            }
+
+            var plotArea = model.PlotArea;
+            if (position.X < plotArea.Left || position.X > plotArea.Right ||
+                position.Y < plotArea.Top || position.Y > plotArea.Bottom)
+            {
+                return null;
+            }
+
+            var screenPoint = new ScreenPoint(position.X, position.Y);
+
+            foreach (var item in barSeries.Items)
+            {
+                if (item?.Tag is not string name || string.IsNullOrWhiteSpace(name))
+                {
+                    continue;
+                }
+
+                double x0 = dateAxis.Transform(item.Start);
+                double x1 = dateAxis.Transform(item.End);
+                double half = barSeries.BarWidth / 2.0;
+                double y0 = categoryAxis.Transform(item.CategoryIndex - half);
+                double y1 = categoryAxis.Transform(item.CategoryIndex + half);
+
+                double minX = Math.Min(x0, x1);
+                double maxX = Math.Max(x0, x1);
+                double minY = Math.Min(y0, y1);
+                double maxY = Math.Max(y0, y1);
+
+                if (screenPoint.X >= minX && screenPoint.X <= maxX &&
+                    screenPoint.Y >= minY && screenPoint.Y <= maxY)
+                {
+                    return name;
+                }
+            }
+
+            return null;
         }
 
         private static int ExtractFilterKey(object tag)

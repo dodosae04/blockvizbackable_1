@@ -192,7 +192,11 @@ namespace BlockViz.Applications.ViewModels
                 foreach (var kv in durByBlock.OrderByDescending(x => x.Value))
                 {
                     if (kv.Value <= 0) continue;
-                    series.Slices.Add(new PieSlice("", kv.Value) { Fill = colorService.GetOxyColor(kv.Key) });
+                    series.Slices.Add(new PieSlice("", kv.Value)
+                    {
+                        Fill = colorService.GetOxyColor(kv.Key),
+                        Tag = kv.Key
+                    });
                 }
 
                 if (idleDays > 0)
