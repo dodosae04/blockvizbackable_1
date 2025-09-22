@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using BlockViz.Applications.Extensions;
 using BlockViz.Applications.Views;
 using BlockViz.Domain.Models;
 using HelixToolkit.Wpf;
@@ -189,7 +190,7 @@ namespace BlockViz.Presentation.Views
             if (viewport == null) return;
 
             var block = HitTestBlock(e.GetPosition(viewport));
-            UpdateTooltip(block?.Name);
+            UpdateTooltip(block);
         }
 
         private void OnViewportMouseLeave(object sender, MouseEventArgs e)
@@ -197,14 +198,16 @@ namespace BlockViz.Presentation.Views
             UpdateTooltip(null);
         }
 
-        private void UpdateTooltip(string? content)
+        private void UpdateTooltip(Block? block)
         {
-            if (string.IsNullOrWhiteSpace(content))
+            if (block == null)
             {
                 currentTooltipContent = null;
                 hoverToolTip.IsOpen = false;
                 return;
             }
+
+            var content = block.GetDisplayName();
 
             if (!string.Equals(currentTooltipContent, content, StringComparison.Ordinal))
             {
