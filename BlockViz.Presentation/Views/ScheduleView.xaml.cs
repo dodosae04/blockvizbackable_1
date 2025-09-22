@@ -78,7 +78,7 @@ namespace BlockViz.Presentation.Views
             }
         }
 
-        public event Action<Block>? BlockClicked;
+        public event Action<Block?>? BlockClicked;
         public event EventHandler<double>? TimelineValueChanged;
 
         public void ConfigureTimeline(DateTime start, DateTime end)
@@ -164,11 +164,8 @@ namespace BlockViz.Presentation.Views
             if (viewport == null) return;
             var block = HitTestBlock(e.GetPosition(viewport));
 
-            if (block != null)
-            {
-                BlockClicked?.Invoke(block);
-                e.Handled = true;
-            }
+            BlockClicked?.Invoke(block);
+            e.Handled = block != null;
         }
 
         private void OnViewportMouseMove(object sender, MouseEventArgs e)

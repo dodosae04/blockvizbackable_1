@@ -12,7 +12,7 @@ namespace BlockViz.Applications.Views
 
         DateTime CurrentDate { get; set; }
 
-        event Action<Block> BlockClicked;
+        event Action<Block?> BlockClicked;
 
         void ConfigureTimeline(DateTime start, DateTime end);
 
