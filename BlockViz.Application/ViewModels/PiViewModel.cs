@@ -7,8 +7,10 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Waf.Applications;
 using BlockViz.Applications.Extensions;
+using BlockViz.Applications.Models;
 using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
+using BlockViz.Domain.Models;
 using OxyPlot;
 using OxyPlot.Series;
 
@@ -132,7 +134,7 @@ namespace BlockViz.Applications.ViewModels
                 }
 
                 // 1) 윈도우로 클리핑
-                var clipped = new List<(string Name, DateTime Start, DateTime End)>();
+                var clipped = new List<(Block Block, DateTime Start, DateTime End)>();
                 foreach (var b in ws)
                 {
                     var effectiveEnd = b.GetEffectiveEnd() ?? windowEnd;
@@ -140,7 +142,7 @@ namespace BlockViz.Applications.ViewModels
                     var s = b.Start < windowStart ? windowStart : b.Start;
                     var e = effectiveEnd > windowEnd ? windowEnd : effectiveEnd;
                     if (e <= s) continue;
-                    clipped.Add((b.Name, s, e));
+                    clipped.Add((b, s, e));
                 }
 
                 if (!clipped.Any())
@@ -162,7 +164,7 @@ namespace BlockViz.Applications.ViewModels
                 var t = ticks.OrderBy(x => x).ToList();
 
                 // 3) 구간별 활성 블록 집계(겹침은 균등 분배)
-                var durByBlock = new Dictionary<string, double>(StringComparer.Ordinal);
+                var durByBlock = new Dictionary<string, BlockDurationAccumulator>(StringComparer.OrdinalIgnoreCase);
                 double idleDays = 0;
 
                 for (int i = 0; i < t.Count - 1; i++)
@@ -180,19 +182,32 @@ namespace BlockViz.Applications.ViewModels
                     else
                     {
                         double share = seg / active.Count;
-                        foreach (var (name, _, _) in active)
+                        foreach (var (block, _, _) in active)
                         {
-                            if (!durByBlock.ContainsKey(name)) durByBlock[name] = 0;
-                            durByBlock[name] += share;
+                            var key = block?.Name ?? string.Empty;
+                            if (!durByBlock.TryGetValue(key, out var info))
+                            {
+                                info = new BlockDurationAccumulator(key);
+                                durByBlock[key] = info;
+                            }
+
+                            info.Duration += share;
+                            info.AddDisplayName(block.GetDisplayName());
                         }
                     }
                 }
 
                 // 4) 파이 조각 추가 — 라벨 텍스트는 빈 문자열("") 유지
-                foreach (var kv in durByBlock.OrderByDescending(x => x.Value))
+                foreach (var info in durByBlock.Values
+                                             .Where(v => v.Duration > 0)
+                                             .OrderByDescending(v => v.Duration))
                 {
-                    if (kv.Value <= 0) continue;
-                    series.Slices.Add(new PieSlice("", kv.Value) { Fill = colorService.GetOxyColor(kv.Key) });
+                    info.SortDisplayNames();
+                    var slice = new BlockPieSlice(info.ColorKey, info.DisplayNames, info.Duration)
+                    {
+                        Fill = colorService.GetOxyColor(info.ColorKey)
+                    };
+                    series.Slices.Add(slice);
                 }
 
                 if (idleDays > 0)
@@ -266,6 +281,37 @@ namespace BlockViz.Applications.ViewModels
             s.Slices.Add(new PieSlice("", value) { Fill = OxyColors.LightGray });
             model.Series.Add(s);
             return model;
+        }
+
+        private sealed class BlockDurationAccumulator
+        {
+            private readonly HashSet<string> uniqueNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            public BlockDurationAccumulator(string colorKey)
+            {
+                ColorKey = colorKey ?? string.Empty;
+            }
+
+            public string ColorKey { get; }
+
+            public double Duration { get; set; }
+
+            public List<string> DisplayNames { get; } = new List<string>();
+
+            public void AddDisplayName(string name)
+            {
+                if (string.IsNullOrWhiteSpace(name)) return;
+                if (uniqueNames.Add(name))
+                {
+                    DisplayNames.Add(name);
+                }
+            }
+
+            public void SortDisplayNames()
+            {
+                if (DisplayNames.Count <= 1) return;
+                DisplayNames.Sort(StringComparer.OrdinalIgnoreCase);
+            }
         }
     }
 }
