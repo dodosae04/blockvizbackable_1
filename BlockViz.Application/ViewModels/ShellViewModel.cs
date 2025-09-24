@@ -5,35 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Waf.Applications;
-using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
-using BlockViz.Domain.Models;
 
 namespace BlockViz.Applications.ViewModels
 {
     [Export]
     public class ShellViewModel : ViewModel<IShellView>
     {
-        private readonly ISelectionService selectionService;
-
         [ImportingConstructor]
-        public ShellViewModel(IShellView view, ISelectionService selectionService) : base(view)
+        public ShellViewModel(IShellView view) : base(view)
         {
-            this.selectionService = selectionService;
-            this.selectionService.SelectedBlockChanged += (_, _) => RaisePropertyChanged(nameof(SelectedBlock));
-        }
-
-        public Block? SelectedBlock
-        {
-            get => selectionService.SelectedBlock;
-            set
-            {
-                if (!Equals(selectionService.SelectedBlock, value))
-                {
-                    selectionService.SelectedBlock = value;
-                    RaisePropertyChanged(nameof(SelectedBlock));
-                }
-            }
         }
 
         public void Show()

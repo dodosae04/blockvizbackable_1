@@ -15,9 +15,9 @@ namespace BlockViz.Applications.Models
             element.SetValue(BlockDataProperty, value);
         }
 
-        public static Block? GetData(ModelVisual3D element)
+        public static Block GetData(ModelVisual3D element)
         {
-            return (Block?)element.GetValue(BlockDataProperty);
+            return (Block)element.GetValue(BlockDataProperty);
         }
     }
 }

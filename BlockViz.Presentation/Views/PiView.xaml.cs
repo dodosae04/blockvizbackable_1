@@ -1,9 +1,7 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Windows;
 using System.Windows.Controls;
 using BlockViz.Applications.Views;
-using OxyPlot.Wpf;
 using PlotModel = OxyPlot.PlotModel;
 
 namespace BlockViz.Presentation.Views
@@ -12,7 +10,7 @@ namespace BlockViz.Presentation.Views
     [PartCreationPolicy(System.ComponentModel.Composition.CreationPolicy.NonShared)]
     public partial class PiView : UserControl, IPiView
     {
-        private ObservableCollection<PlotModel> models = new();
+        private ObservableCollection<PlotModel> models = new ObservableCollection<PlotModel>();
 
         public PiView()
         {
@@ -27,22 +25,6 @@ namespace BlockViz.Presentation.Views
             {
                 models = value ?? new ObservableCollection<PlotModel>();
                 if (cards != null) cards.ItemsSource = models;
-            }
-        }
-
-        private void OnPiePlotLoaded(object sender, RoutedEventArgs e)
-        {
-            if (sender is PlotView plotView)
-            {
-                ToolTipService.SetIsEnabled(plotView, false);
-            }
-        }
-
-        private void OnPiePlotUnloaded(object sender, RoutedEventArgs e)
-        {
-            if (sender is PlotView plotView)
-            {
-                ToolTipService.SetIsEnabled(plotView, false);
             }
         }
     }

@@ -86,16 +86,6 @@
                         <ToolTip Content="작업장 6의 블록만 확장하여 표시" />
                     </ToggleButton.ToolTip>
                 </ToggleButton>
-                <ToggleButton x:Name="expandAllButton"
-                              Content="모두 확장"
-                              Width="96"
-                              Margin="12,0,0,6"
-                              Checked="OnExpandAllChecked"
-                              Unchecked="OnExpandAllUnchecked">
-                    <ToggleButton.ToolTip>
-                        <ToolTip Content="모든 작업장의 겹친 블록을 행으로 분리" />
-                    </ToggleButton.ToolTip>
-                </ToggleButton>
             </WrapPanel>
         </StackPanel>
         <oxy:PlotView x:Name="plot" />
