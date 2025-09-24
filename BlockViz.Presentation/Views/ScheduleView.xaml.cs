@@ -4,12 +4,14 @@ using System.ComponentModel.Composition;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using BlockViz.Applications.Views;
 using BlockViz.Domain.Models;
 using HelixToolkit.Wpf;
+using BlockViz.Applications.Extensions;
 
 namespace BlockViz.Presentation.Views
 {
@@ -29,10 +31,26 @@ namespace BlockViz.Presentation.Views
         private static readonly Vector3D InitUp = new(-1, 1000, 1);
         private const double InitFov = 40.0;
 
+        private readonly ToolTip blockToolTip = new()
+        {
+            Placement = PlacementMode.Mouse,
+            StaysOpen = false,
+            IsHitTestVisible = false
+        };
+
+        private string currentTooltipText = string.Empty;
+        private bool viewportInteractionsAttached;
+
         public ScheduleView()
         {
             InitializeComponent();
-            Loaded += (_, __) => { ApplyVisuals(); UpdateDateText(); EnsureInitialCamera(); };
+            Loaded += (_, __) =>
+            {
+                ApplyVisuals();
+                UpdateDateText();
+                EnsureInitialCamera();
+                AttachViewportInteractions();
+            };
         }
 
         public ObservableCollection<Visual3D> Visuals
@@ -113,6 +131,7 @@ namespace BlockViz.Presentation.Views
 
         private void ApplyVisuals()
         {
+            HideBlockTooltip();
             if (SceneRoot == null) return;
             SceneRoot.Children.Clear();
             foreach (var v in visuals)
@@ -140,40 +159,54 @@ namespace BlockViz.Presentation.Views
             }
         }
 
+        private void AttachViewportInteractions()
+        {
+            if (viewportInteractionsAttached || viewport == null) return;
+
+            viewportInteractionsAttached = true;
+            blockToolTip.PlacementTarget = viewport;
+            ToolTipService.SetInitialShowDelay(viewport, 0);
+            ToolTipService.SetBetweenShowDelay(viewport, 0);
+            ToolTipService.SetShowDuration(viewport, int.MaxValue);
+
+            viewport.MouseMove += OnViewportMouseMove;
+            viewport.MouseLeave += OnViewportMouseLeave;
+        }
+
         private void OnViewportMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (viewport == null) return;
-            var pt = e.GetPosition(viewport);
+            var block = HitTestBlock(e.GetPosition(viewport));
 
-            Block? foundBlock = null;
-
-            HitTestResultCallback cb = (hit) =>
+            if (block != null)
             {
-                if (hit is RayHitTestResult r)
-                {
-                    DependencyObject? d = r.VisualHit as DependencyObject;
-                    while (d != null)
-                    {
-                        var blk = TryGetBlockFromAttachedProperty(d);
-                        if (blk != null) { foundBlock = blk; return HitTestResultBehavior.Stop; }
-
-                        var tag = d.GetValue(FrameworkElement.TagProperty);
-                        if (tag is Block tb) { foundBlock = tb; return HitTestResultBehavior.Stop; }
-
-                        d = VisualTreeHelper.GetParent(d);
-                    }
-                }
-                return HitTestResultBehavior.Continue;
-            };
-
-            VisualTreeHelper.HitTest(viewport, null, cb, new PointHitTestParameters(pt));
-
-            if (foundBlock != null)
-            {
-                BlockClicked?.Invoke(foundBlock);
+                BlockClicked?.Invoke(block);
                 e.Handled = true;
             }
         }
+
+        private void OnViewportMouseMove(object sender, MouseEventArgs e)
+        {
+            if (viewport == null) return;
+
+            if (e.LeftButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed)
+            {
+                HideBlockTooltip();
+                return;
+            }
+
+            var block = HitTestBlock(e.GetPosition(viewport));
+            if (block != null)
+            {
+                ShowBlockTooltip(block.GetDisplayName());
+            }
+            else
+            {
+                HideBlockTooltip();
+            }
+        }
+
+        private void OnViewportMouseLeave(object sender, MouseEventArgs e) => HideBlockTooltip();
 
         private static Block? TryGetBlockFromAttachedProperty(DependencyObject d)
         {
@@ -185,6 +218,77 @@ namespace BlockViz.Presentation.Views
                 return obj as Block;
             }
             catch { return null; }
+        }
+
+        private Block? HitTestBlock(Point pt)
+        {
+            if (viewport == null) return null;
+
+            Block? foundBlock = null;
+
+            HitTestResultCallback cb = hit =>
+            {
+                if (hit is RayHitTestResult r)
+                {
+                    DependencyObject? current = r.VisualHit as DependencyObject;
+                    while (current != null)
+                    {
+                        var blk = TryGetBlockFromAttachedProperty(current);
+                        if (blk != null)
+                        {
+                            foundBlock = blk;
+                            return HitTestResultBehavior.Stop;
+                        }
+
+                        var tag = current.GetValue(FrameworkElement.TagProperty);
+                        if (tag is Block tb)
+                        {
+                            foundBlock = tb;
+                            return HitTestResultBehavior.Stop;
+                        }
+
+                        current = VisualTreeHelper.GetParent(current);
+                    }
+                }
+                return HitTestResultBehavior.Continue;
+            };
+
+            VisualTreeHelper.HitTest(viewport, null, cb, new PointHitTestParameters(pt));
+            return foundBlock;
+        }
+
+        private void ShowBlockTooltip(string text)
+        {
+            if (viewport == null || string.IsNullOrWhiteSpace(text))
+            {
+                HideBlockTooltip();
+                return;
+            }
+
+            if (!ReferenceEquals(blockToolTip.PlacementTarget, viewport))
+            {
+                blockToolTip.PlacementTarget = viewport;
+            }
+
+            if (!string.Equals(currentTooltipText, text, StringComparison.Ordinal))
+            {
+                blockToolTip.Content = text;
+                currentTooltipText = text;
+            }
+
+            if (!blockToolTip.IsOpen)
+            {
+                blockToolTip.IsOpen = true;
+            }
+        }
+
+        private void HideBlockTooltip()
+        {
+            if (blockToolTip.IsOpen)
+            {
+                blockToolTip.IsOpen = false;
+            }
+            currentTooltipText = string.Empty;
         }
 
         private void TimelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
