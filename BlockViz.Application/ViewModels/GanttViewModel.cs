@@ -286,12 +286,15 @@ namespace BlockViz.Applications.ViewModels
 
                 foreach (var segment in rowSegments[categoryIndex])
                 {
+                    var displayName = segment.Block.GetDisplayName();
                     series.Items.Add(new IntervalBarItem
                     {
                         CategoryIndex = categoryIndex,
                         Start = DateTimeAxis.ToDouble(segment.Start),
                         End = DateTimeAxis.ToDouble(segment.End),
-                        Color = colorService.GetOxyColor(segment.Block.Name) // 색상 동기화
+                        Color = colorService.GetOxyColor(segment.Block.Name), // 색상 동기화
+                        Title = displayName,
+                        Tag = segment.Block
                     });
                 }
             }
@@ -319,7 +322,7 @@ namespace BlockViz.Applications.ViewModels
         }
 
         private bool ShouldExpandWorkplace(int workplaceId)
-            => selectedWorkplaceId.HasValue && selectedWorkplaceId.Value == workplaceId;
+            => !selectedWorkplaceId.HasValue || selectedWorkplaceId.Value == workplaceId;
 
         private void EnsureDefaultRows(ICollection<string> axisLabels, ICollection<List<BlockSegment>> rowSegments)
         {
