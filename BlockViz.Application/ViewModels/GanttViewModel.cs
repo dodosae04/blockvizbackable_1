@@ -23,6 +23,7 @@ namespace BlockViz.Applications.ViewModels
     {
         private readonly IScheduleService scheduleService;
         private readonly SimulationService simulationService;
+        private readonly ISelectionService selectionService;
         private readonly IBlockColorService colorService;
         private int? selectedWorkplaceId;
 
@@ -30,6 +31,7 @@ namespace BlockViz.Applications.ViewModels
 
         private readonly DateTimeAxis dateAxis;
         private readonly CategoryAxis catAxis;
+        private readonly Dictionary<IntervalBarItem, Block?> blockLookup = new();
 
         private static readonly int[] WorkplaceIds = { 1, 2, 3, 4, 5, 6 };
         private const double BarWidth = 0.78;
@@ -75,10 +77,12 @@ namespace BlockViz.Applications.ViewModels
         public GanttViewModel(IGanttView view,
                               IScheduleService scheduleService,
                               SimulationService simulationService,
+                              ISelectionService selectionService,
                               IBlockColorService colorService) : base(view)
         {
             this.scheduleService = scheduleService;
             this.simulationService = simulationService;
+            this.selectionService = selectionService;
             this.colorService = colorService;
 
             GanttModel = new PlotModel { Title = "공장 가동 스케줄" };
@@ -136,6 +140,11 @@ namespace BlockViz.Applications.ViewModels
 
         private void UpdateGantt()
         {
+            foreach (var existingSeries in GanttModel.Series.OfType<IntervalBarSeries>().ToList())
+            {
+                existingSeries.MouseDown -= OnSeriesMouseDown;
+            }
+
             GanttModel.Series.Clear();
 
             var all = scheduleService.GetAllBlocks()?.ToList() ?? new List<Block>();
@@ -238,6 +247,8 @@ namespace BlockViz.Applications.ViewModels
             nowLine.Points.Add(new DataPoint(DateTimeAxis.ToDouble(now), axisLabels.Count - 0.5));
             GanttModel.Series.Add(nowLine);
 
+            blockLookup.Clear();
+
             var series = new IntervalBarSeries
             {
                 StrokeColor = OxyColors.Black,
@@ -245,6 +256,7 @@ namespace BlockViz.Applications.ViewModels
                 LabelFormatString = null,
                 BarWidth = BarWidth
             };
+            series.MouseDown += OnSeriesMouseDown;
 
             for (int categoryIndex = 0; categoryIndex < rowSegments.Count; categoryIndex++)
             {
@@ -259,7 +271,7 @@ namespace BlockViz.Applications.ViewModels
                 foreach (var segment in rowSegments[categoryIndex])
                 {
                     var displayName = segment.Block.GetDisplayName();
-                    series.Items.Add(new IntervalBarItem
+                    var item = new IntervalBarItem
                     {
                         CategoryIndex = categoryIndex,
                         Start = DateTimeAxis.ToDouble(segment.Start),
@@ -267,12 +279,33 @@ namespace BlockViz.Applications.ViewModels
                         Color = colorService.GetOxyColor(segment.Block.Name), // 확정 색상
                         Title = displayName                                // ★ Tooltip용 이름
                         // Tag 사용하지 않음
-                    });
+                    };
+                    series.Items.Add(item);
+
+                    if (segment.Block != null)
+                    {
+                        blockLookup[item] = segment.Block;
+                    }
                 }
             }
 
             GanttModel.Series.Add(series);
             GanttModel.InvalidatePlot(true);
+        }
+
+        private void OnSeriesMouseDown(object? sender, OxyMouseDownEventArgs e)
+        {
+            if (e.ChangedButton != OxyMouseButton.Left)
+            {
+                return;
+            }
+
+            if (e.HitTestResult?.Item is IntervalBarItem item &&
+                blockLookup.TryGetValue(item, out var block) &&
+                block != null)
+            {
+                selectionService.SelectedBlock = block;
+            }
         }
 
         private IEnumerable<int> GetVisibleWorkplaces()

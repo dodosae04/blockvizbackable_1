@@ -192,7 +192,7 @@ namespace BlockViz.Applications.ViewModels
                             }
 
                             info.Duration += share;
-                            info.AddDisplayName(block.GetDisplayName());
+                            info.AddBlock(block);
                         }
                     }
                 }
@@ -203,7 +203,7 @@ namespace BlockViz.Applications.ViewModels
                                              .OrderByDescending(v => v.Duration))
                 {
                     info.SortDisplayNames();
-                    var slice = new BlockPieSlice(info.ColorKey, info.DisplayNames, info.Duration)
+                    var slice = new BlockPieSlice(info.ColorKey, info.DisplayNames, info.Duration, info.Blocks)
                     {
                         Fill = colorService.GetOxyColor(info.ColorKey)
                     };
@@ -285,7 +285,9 @@ namespace BlockViz.Applications.ViewModels
 
         private sealed class BlockDurationAccumulator
         {
-            private readonly HashSet<string> uniqueNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            private readonly HashSet<string> uniqueNames = new(StringComparer.OrdinalIgnoreCase);
+            private readonly HashSet<Block> uniqueBlocks = new();
+            private readonly List<Block> blocks = new();
 
             public BlockDurationAccumulator(string colorKey)
             {
@@ -296,12 +298,21 @@ namespace BlockViz.Applications.ViewModels
 
             public double Duration { get; set; }
 
-            public List<string> DisplayNames { get; } = new List<string>();
+            public List<string> DisplayNames { get; } = new();
 
-            public void AddDisplayName(string name)
+            public IReadOnlyList<Block> Blocks => blocks;
+
+            public void AddBlock(Block? block)
             {
-                if (string.IsNullOrWhiteSpace(name)) return;
-                if (uniqueNames.Add(name))
+                if (block == null) return;
+
+                if (uniqueBlocks.Add(block))
+                {
+                    blocks.Add(block);
+                }
+
+                var name = block.GetDisplayName();
+                if (!string.IsNullOrWhiteSpace(name) && uniqueNames.Add(name))
                 {
                     DisplayNames.Add(name);
                 }
@@ -309,8 +320,18 @@ namespace BlockViz.Applications.ViewModels
 
             public void SortDisplayNames()
             {
-                if (DisplayNames.Count <= 1) return;
-                DisplayNames.Sort(StringComparer.OrdinalIgnoreCase);
+                if (DisplayNames.Count > 1)
+                {
+                    DisplayNames.Sort(StringComparer.OrdinalIgnoreCase);
+                }
+
+                if (blocks.Count > 1)
+                {
+                    blocks.Sort((a, b) => string.Compare(
+                        a?.GetDisplayName(),
+                        b?.GetDisplayName(),
+                        StringComparison.OrdinalIgnoreCase));
+                }
             }
         }
     }
