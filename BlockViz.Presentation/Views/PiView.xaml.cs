@@ -150,9 +150,9 @@ namespace BlockViz.Presentation.Views
                     nameOverlayHint.Text = "Ctrl+C로 복사, ESC 또는 배경 클릭으로 닫기";
 
                     var singleBlock = blockSlice.SingleBlock;
-                    if (singleBlock != null)
+                    if (singleBlock != null && selectionService != null)
                     {
-                        selectionService?.SelectedBlock = singleBlock;
+                        selectionService.SelectedBlock = singleBlock;
                     }
                 }
                 else
