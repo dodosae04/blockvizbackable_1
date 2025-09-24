@@ -9,7 +9,6 @@ using System.Windows.Input;
 using BlockViz.Applications.Views;
 using PlotModel = OxyPlot.PlotModel;
 using BlockViz.Applications.Extensions;
-using BlockViz.Domain.Models;
 using OxyPlot;
 using OxyPlot.Series;
 
@@ -81,44 +80,39 @@ namespace BlockViz.Presentation.Views
             if (plot?.Model is not PlotModel plotModel)
             {
                 HideTooltip();
-                return;
             }
-
-            var position = e.GetPosition(plot);
-            var screenPoint = new ScreenPoint(position.X, position.Y);
-
-            foreach (var series in plotModel.Series.OfType<IntervalBarSeries>())
+            else
             {
-                var result = series.GetNearestPoint(screenPoint, true);
-                if (result?.Item is IntervalBarItem item)
+                var position = e.GetPosition(plot);
+                var screenPoint = new ScreenPoint(position.X, position.Y);
+
+                foreach (var series in plotModel.Series.OfType<IntervalBarSeries>())
                 {
-                    var tooltipText = ExtractTooltipText(item);
-                    if (string.IsNullOrEmpty(tooltipText))
+                    var result = series.GetNearestPoint(screenPoint, true);
+                    if (result?.Item is IntervalBarItem item)
                     {
-                        tooltipText = FindBlockTooltip(series, item.CategoryIndex, result.DataPoint.X);
-                    }
-                    if (!string.IsNullOrEmpty(tooltipText))
-                    {
-                        ShowTooltip(tooltipText);
-                        return;
+                        var tooltipText = ExtractTooltipText(item);
+                        if (string.IsNullOrEmpty(tooltipText))
+                        {
+                            tooltipText = FindBlockTooltip(series, item.CategoryIndex, result.DataPoint.X);
+                        }
+                        if (!string.IsNullOrEmpty(tooltipText))
+                        {
+                            ShowTooltip(tooltipText);
+                            return;
+                        }
                     }
                 }
+                HideTooltip();
             }
-
-            HideTooltip();
         }
 
-        private void Plot_MouseLeave(object sender, MouseEventArgs e)
-            => HideTooltip();
+        private void Plot_MouseLeave(object sender, MouseEventArgs e) => HideTooltip();
 
         public void SetActiveWorkplace(int? workplaceId)
         {
             int key = workplaceId.HasValue ? workplaceId.Value : DefaultFilterKey;
-            if (!filterButtons.ContainsKey(key))
-            {
-                key = DefaultFilterKey;
-            }
-
+            if (!filterButtons.ContainsKey(key)) key = DefaultFilterKey;
             SetActiveButton(key);
         }
 
@@ -128,121 +122,70 @@ namespace BlockViz.Presentation.Views
             try
             {
                 foreach (var pair in filterButtons)
-                {
                     pair.Value.IsChecked = pair.Key == key;
-                }
             }
-            finally
-            {
-                suppressFilterNotification = false;
-            }
+            finally { suppressFilterNotification = false; }
         }
 
-        private void OnFilterButtonChecked(object sender, System.Windows.RoutedEventArgs e)
+        private void OnFilterButtonChecked(object sender, RoutedEventArgs e)
         {
-            if (suppressFilterNotification)
-            {
-                return;
-            }
+            if (suppressFilterNotification) return;
 
             if (sender is ToggleButton toggle)
             {
                 int key = ExtractFilterKey(toggle.Tag);
-                if (!filterButtons.ContainsKey(key))
-                {
-                    key = DefaultFilterKey;
-                }
+                if (!filterButtons.ContainsKey(key)) key = DefaultFilterKey;
 
                 suppressFilterNotification = true;
                 try
                 {
                     foreach (var pair in filterButtons)
-                    {
                         if (!ReferenceEquals(pair.Value, toggle))
-                        {
                             pair.Value.IsChecked = false;
-                        }
-                    }
                 }
-                finally
-                {
-                    suppressFilterNotification = false;
-                }
+                finally { suppressFilterNotification = false; }
 
                 var workplaceId = key == DefaultFilterKey ? (int?)null : key;
                 WorkplaceFilterRequested?.Invoke(this, new WorkplaceFilterRequestedEventArgs(workplaceId));
             }
         }
 
-        private void OnFilterButtonUnchecked(object sender, System.Windows.RoutedEventArgs e)
+        private void OnFilterButtonUnchecked(object sender, RoutedEventArgs e)
         {
-            if (suppressFilterNotification)
-            {
-                return;
-            }
-
+            if (suppressFilterNotification) return;
             if (sender is ToggleButton toggle)
             {
                 suppressFilterNotification = true;
-                try
-                {
-                    toggle.IsChecked = true;
-                }
-                finally
-                {
-                    suppressFilterNotification = false;
-                }
+                try { toggle.IsChecked = true; }
+                finally { suppressFilterNotification = false; }
             }
         }
 
         private static int ExtractFilterKey(object tag)
         {
-            if (tag is int intValue)
-            {
-                return intValue;
-            }
-
-            if (tag is string stringValue && int.TryParse(stringValue, out int parsed))
-            {
-                return parsed;
-            }
-
+            if (tag is int i) return i;
+            if (tag is string s && int.TryParse(s, out int parsed)) return parsed;
             return DefaultFilterKey;
         }
 
-        private string ExtractTooltipText(IntervalBarItem item)
+        // ★ IntervalBarItem.Tag 를 전혀 사용하지 않음 ? Title(표시명)만 사용
+        private static string ExtractTooltipText(IntervalBarItem item)
+            => string.IsNullOrWhiteSpace(item?.Title) ? string.Empty : item.Title;
+
+        private static string FindBlockTooltip(IntervalBarSeries series, int categoryIndex, double positionX)
         {
-            if (item?.Tag is Block block)
-            {
-                return block.GetDisplayName();
-            }
-
-            if (!string.IsNullOrWhiteSpace(item?.Title))
-            {
-                return item.Title;
-            }
-
-            return string.Empty;
-        }
-
-        private string FindBlockTooltip(IntervalBarSeries series, int categoryIndex, double positionX)
-        {
-            if (series == null)
-            {
-                return string.Empty;
-            }
+            if (series == null) return string.Empty;
 
             for (int i = series.Items.Count - 1; i >= 0; i--)
             {
-                var candidate = series.Items[i];
-                if (candidate?.Tag is Block candidateBlock &&
-                    candidate.CategoryIndex == categoryIndex &&
-                    candidate.Start <= positionX && positionX <= candidate.End)
+                var c = series.Items[i];
+                if (c != null &&
+                    c.CategoryIndex == categoryIndex &&
+                    c.Start <= positionX && positionX <= c.End)
                 {
-                    return candidateBlock.GetDisplayName();
+                    return string.IsNullOrWhiteSpace(c.Title) ? string.Empty : c.Title;
                 }
             }
-
             return string.Empty;
         }
 
@@ -253,19 +196,12 @@ namespace BlockViz.Presentation.Views
                 blockToolTip.Content = text;
                 currentTooltipText = text;
             }
-
-            if (!blockToolTip.IsOpen)
-            {
-                blockToolTip.IsOpen = true;
-            }
+            if (!blockToolTip.IsOpen) blockToolTip.IsOpen = true;
         }
 
         private void HideTooltip()
         {
-            if (blockToolTip.IsOpen)
-            {
-                blockToolTip.IsOpen = false;
-            }
+            if (blockToolTip.IsOpen) blockToolTip.IsOpen = false;
             currentTooltipText = string.Empty;
         }
     }

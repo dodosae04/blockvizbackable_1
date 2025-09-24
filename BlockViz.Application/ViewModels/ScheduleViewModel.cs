@@ -1,8 +1,9 @@
-﻿// ✅ 수정된 ScheduleViewModel.cs - BlockName 기준 색상 일관성 적용
+﻿// ✅ 수정본: ToolTipService 네임스페이스 추가 + 블록 Tooltip/색상 일관화
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Windows.Controls;                   // ★ ToolTipService
 using System.Windows.Media.Media3D;
 using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
@@ -105,6 +106,8 @@ namespace BlockViz.Applications.ViewModels
                             var material = MaterialHelper.CreateMaterial(brush);
                             box.Material = material;
                             box.BackMaterial = material;
+
+                            // ★ MouseOver 툴팁
                             ToolTipService.SetToolTip(box, displayName);
                             ToolTipService.SetInitialShowDelay(box, 0);
                             ToolTipService.SetBetweenShowDelay(box, 0);
