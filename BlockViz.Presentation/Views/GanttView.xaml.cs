@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,8 +9,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using BlockViz.Applications.Views;
 using PlotModel = OxyPlot.PlotModel;
-using BlockViz.Applications.Extensions;
 using OxyPlot;
+using OxyPlot.Axes;
 using OxyPlot.Series;
 
 namespace BlockViz.Presentation.Views
@@ -110,10 +111,11 @@ namespace BlockViz.Presentation.Views
                 var result = series.GetNearestPoint(screenPoint, true);
                 if (result?.Item is IntervalBarItem item)
                 {
-                    var tooltipText = ExtractTooltipText(item);
+                    var tooltipText = BuildTooltipText(item);
                     if (string.IsNullOrEmpty(tooltipText))
                     {
-                        tooltipText = FindBlockTooltip(series, item.CategoryIndex, result.DataPoint.X);
+                        var fallback = FindBlockItem(series, item.CategoryIndex, result.DataPoint.X);
+                        tooltipText = BuildTooltipText(fallback);
                     }
                     if (!string.IsNullOrEmpty(tooltipText))
                     {
@@ -185,25 +187,73 @@ namespace BlockViz.Presentation.Views
             return DefaultFilterKey;
         }
 
-        // ★ IntervalBarItem.Tag 를 전혀 사용하지 않음 ? Title(표시명)만 사용
-        private static string ExtractTooltipText(IntervalBarItem item)
-            => string.IsNullOrWhiteSpace(item?.Title) ? string.Empty : item.Title;
-
-        private static string FindBlockTooltip(IntervalBarSeries series, int categoryIndex, double positionX)
+        private static IntervalBarItem? FindBlockItem(IntervalBarSeries series, int categoryIndex, double positionX)
         {
-            if (series == null) return string.Empty;
+            if (series == null) return null;
 
             for (int i = series.Items.Count - 1; i >= 0; i--)
             {
                 var c = series.Items[i];
                 if (c != null &&
                     c.CategoryIndex == categoryIndex &&
-                    c.Start <= positionX && positionX <= c.End)
+                    c.Start <= positionX && positionX <= c.End &&
+                    !string.IsNullOrWhiteSpace(c.Title))
                 {
-                    return string.IsNullOrWhiteSpace(c.Title) ? string.Empty : c.Title;
+                    return c;
                 }
             }
-            return string.Empty;
+            return null;
+        }
+
+        // IntervalBarItem.Tag 는 사용하지 않고 Title(표시명)과 축 값을 이용해 문자열을 구성한다.
+        private static string BuildTooltipText(IntervalBarItem? item)
+        {
+            if (item == null) return string.Empty;
+
+            var title = item.Title?.Trim();
+            if (string.IsNullOrEmpty(title)) return string.Empty;
+
+            var startText = FormatDate(item.Start);
+            var endText = FormatDate(item.End);
+
+            if (string.IsNullOrEmpty(startText) && string.IsNullOrEmpty(endText))
+            {
+                return title;
+            }
+
+            if (string.IsNullOrEmpty(startText))
+            {
+                return string.IsNullOrEmpty(endText)
+                    ? title
+                    : $"{title}{Environment.NewLine}종료: {endText}";
+            }
+
+            if (string.IsNullOrEmpty(endText))
+            {
+                return $"{title}{Environment.NewLine}시작: {startText}";
+            }
+
+            return $"{title}{Environment.NewLine}시작: {startText}{Environment.NewLine}종료: {endText}";
+        }
+
+        private static string FormatDate(double value)
+        {
+            if (double.IsNaN(value) || double.IsInfinity(value)) return string.Empty;
+
+            try
+            {
+                var date = DateTimeAxis.ToDateTime(value);
+                if (date == DateTime.MinValue || date == DateTime.MaxValue)
+                {
+                    return string.Empty;
+                }
+
+                return date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         private void ShowTooltip(string text)
