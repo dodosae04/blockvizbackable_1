@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BlockViz.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b31f4f9148f9dc65b0159740a2c4f474e604b65f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c1c1ea53b539e708f03fe5f985157aef98a13153")]
 [assembly: System.Reflection.AssemblyProductAttribute("BlockViz.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BlockViz.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

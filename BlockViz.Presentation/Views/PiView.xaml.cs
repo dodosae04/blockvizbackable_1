@@ -180,7 +180,7 @@ namespace BlockViz.Presentation.Views
         {
             if (nameOverlayPanel == null) return;
 
-            if (!color.IsUndefined)
+            if (!color.Equals(OxyColors.Undefined) && !color.Equals(OxyColors.Automatic))
             {
                 var brush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
                 brush.Freeze();
