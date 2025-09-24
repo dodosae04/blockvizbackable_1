@@ -7,10 +7,12 @@ using System.Windows.Media.Media3D;
 using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
 using System.Waf.Applications;
+using System.Windows;
 using System.Windows.Media;
 using HelixToolkit.Wpf;
 using BlockViz.Applications.Models;
 using BlockViz.Domain.Models;
+using BlockViz.Applications.Extensions;
 
 namespace BlockViz.Applications.ViewModels
 {
@@ -94,6 +96,7 @@ namespace BlockViz.Applications.ViewModels
                 if (model is ModelVisual3D mv3d &&
                     BlockProperties.GetData(mv3d) is Block b)
                 {
+                    var displayName = b.GetDisplayName();
                     foreach (var child in mv3d.Children)
                     {
                         if (child is BoxVisual3D box)
@@ -102,6 +105,10 @@ namespace BlockViz.Applications.ViewModels
                             var material = MaterialHelper.CreateMaterial(brush);
                             box.Material = material;
                             box.BackMaterial = material;
+                            ToolTipService.SetToolTip(box, displayName);
+                            ToolTipService.SetInitialShowDelay(box, 0);
+                            ToolTipService.SetBetweenShowDelay(box, 0);
+                            ToolTipService.SetShowDuration(box, int.MaxValue);
                         }
                     }
                 }

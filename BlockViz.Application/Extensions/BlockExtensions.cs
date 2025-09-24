@@ -45,5 +45,25 @@ namespace BlockViz.Applications.Extensions
             var end = block.GetEffectiveEnd();
             return end == null || date <= end.Value;
         }
+
+        public static string GetDisplayName(this Block block)
+        {
+            if (block == null)
+            {
+                return string.Empty;
+            }
+
+            if (!string.IsNullOrWhiteSpace(block.Name))
+            {
+                return block.Name;
+            }
+
+            if (block.BlockID != 0)
+            {
+                return block.BlockID.ToString();
+            }
+
+            return "Unnamed Block";
+        }
     }
 }

@@ -1,10 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using BlockViz.Applications.Views;
 using PlotModel = OxyPlot.PlotModel;
+using BlockViz.Applications.Extensions;
+using BlockViz.Domain.Models;
+using OxyPlot;
+using OxyPlot.Series;
 
 namespace BlockViz.Presentation.Views
 {
@@ -17,6 +24,8 @@ namespace BlockViz.Presentation.Views
         private readonly Dictionary<int, ToggleButton> filterButtons;
         private bool suppressFilterNotification;
         private PlotModel model;
+        private readonly ToolTip blockToolTip;
+        private string currentTooltipText;
 
         public GanttView()
         {
@@ -34,6 +43,22 @@ namespace BlockViz.Presentation.Views
             };
 
             SetActiveButton(DefaultFilterKey);
+
+            blockToolTip = new ToolTip
+            {
+                Placement = PlacementMode.Mouse,
+                StaysOpen = false,
+                IsHitTestVisible = false
+            };
+            if (plot != null)
+            {
+                blockToolTip.PlacementTarget = plot;
+                ToolTipService.SetInitialShowDelay(plot, 0);
+                ToolTipService.SetBetweenShowDelay(plot, 0);
+                ToolTipService.SetShowDuration(plot, int.MaxValue);
+                plot.MouseMove += Plot_MouseMove;
+                plot.MouseLeave += Plot_MouseLeave;
+            }
         }
 
         public event EventHandler<WorkplaceFilterRequestedEventArgs> WorkplaceFilterRequested;
@@ -50,6 +75,41 @@ namespace BlockViz.Presentation.Views
                 }
             }
         }
+
+        private void Plot_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (plot?.Model is not PlotModel plotModel)
+            {
+                HideTooltip();
+                return;
+            }
+
+            var position = e.GetPosition(plot);
+            var screenPoint = new ScreenPoint(position.X, position.Y);
+
+            foreach (var series in plotModel.Series.OfType<IntervalBarSeries>())
+            {
+                var result = series.GetNearestPoint(screenPoint, true);
+                if (result?.Item is IntervalBarItem item)
+                {
+                    var tooltipText = ExtractTooltipText(item);
+                    if (string.IsNullOrEmpty(tooltipText))
+                    {
+                        tooltipText = FindBlockTooltip(series, item.CategoryIndex, result.DataPoint.X);
+                    }
+                    if (!string.IsNullOrEmpty(tooltipText))
+                    {
+                        ShowTooltip(tooltipText);
+                        return;
+                    }
+                }
+            }
+
+            HideTooltip();
+        }
+
+        private void Plot_MouseLeave(object sender, MouseEventArgs e)
+            => HideTooltip();
 
         public void SetActiveWorkplace(int? workplaceId)
         {
@@ -148,6 +208,65 @@ namespace BlockViz.Presentation.Views
             }
 
             return DefaultFilterKey;
+        }
+
+        private string ExtractTooltipText(IntervalBarItem item)
+        {
+            if (item?.Tag is Block block)
+            {
+                return block.GetDisplayName();
+            }
+
+            if (!string.IsNullOrWhiteSpace(item?.Title))
+            {
+                return item.Title;
+            }
+
+            return string.Empty;
+        }
+
+        private string FindBlockTooltip(IntervalBarSeries series, int categoryIndex, double positionX)
+        {
+            if (series == null)
+            {
+                return string.Empty;
+            }
+
+            for (int i = series.Items.Count - 1; i >= 0; i--)
+            {
+                var candidate = series.Items[i];
+                if (candidate?.Tag is Block candidateBlock &&
+                    candidate.CategoryIndex == categoryIndex &&
+                    candidate.Start <= positionX && positionX <= candidate.End)
+                {
+                    return candidateBlock.GetDisplayName();
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private void ShowTooltip(string text)
+        {
+            if (!string.Equals(currentTooltipText, text, StringComparison.Ordinal))
+            {
+                blockToolTip.Content = text;
+                currentTooltipText = text;
+            }
+
+            if (!blockToolTip.IsOpen)
+            {
+                blockToolTip.IsOpen = true;
+            }
+        }
+
+        private void HideTooltip()
+        {
+            if (blockToolTip.IsOpen)
+            {
+                blockToolTip.IsOpen = false;
+            }
+            currentTooltipText = string.Empty;
         }
     }
 }
