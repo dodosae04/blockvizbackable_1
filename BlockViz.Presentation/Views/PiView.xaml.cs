@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using BlockViz.Applications.Models;
+using BlockViz.Applications.Services;
 using BlockViz.Applications.Views;
 using OxyPlot;
 using OxyPlot.Series;
@@ -25,6 +26,7 @@ namespace BlockViz.Presentation.Views
         private PlotModel? activeModel;
         private Brush? defaultOverlayBrush;
         private Thickness defaultOverlayThickness;
+        private ISelectionService? selectionService;
 
         public PiView()
         {
@@ -38,6 +40,13 @@ namespace BlockViz.Presentation.Views
             defaultOverlayThickness = nameOverlayPanel?.BorderThickness ?? new Thickness(1.2);
 
             PreviewKeyDown += OnPreviewKeyDown;
+        }
+
+        [Import(AllowDefault = true)]
+        public ISelectionService? SelectionService
+        {
+            get => selectionService;
+            set => selectionService = value;
         }
 
         public ObservableCollection<PlotModel> PieModels
@@ -139,6 +148,12 @@ namespace BlockViz.Presentation.Views
                     nameOverlayText.Text = builder.ToString().TrimEnd();
                     nameOverlayTitle.Text = $"{chartTitle} — 블록 {names.Count}개";
                     nameOverlayHint.Text = "Ctrl+C로 복사, ESC 또는 배경 클릭으로 닫기";
+
+                    var singleBlock = blockSlice.SingleBlock;
+                    if (singleBlock != null)
+                    {
+                        selectionService?.SelectedBlock = singleBlock;
+                    }
                 }
                 else
                 {

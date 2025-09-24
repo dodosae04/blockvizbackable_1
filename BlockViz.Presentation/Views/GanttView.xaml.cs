@@ -57,6 +57,7 @@ namespace BlockViz.Presentation.Views
                 ToolTipService.SetShowDuration(plot, int.MaxValue);
                 plot.MouseMove += Plot_MouseMove;
                 plot.MouseLeave += Plot_MouseLeave;
+                plot.MouseDown += Plot_MouseDown;
             }
         }
 
@@ -77,37 +78,53 @@ namespace BlockViz.Presentation.Views
 
         private void Plot_MouseMove(object sender, MouseEventArgs e)
         {
-            if (plot?.Model is not PlotModel plotModel)
+            if (!TryShowTooltip(e.GetPosition(plot)))
             {
-                HideTooltip();
-            }
-            else
-            {
-                var position = e.GetPosition(plot);
-                var screenPoint = new ScreenPoint(position.X, position.Y);
-
-                foreach (var series in plotModel.Series.OfType<IntervalBarSeries>())
-                {
-                    var result = series.GetNearestPoint(screenPoint, true);
-                    if (result?.Item is IntervalBarItem item)
-                    {
-                        var tooltipText = ExtractTooltipText(item);
-                        if (string.IsNullOrEmpty(tooltipText))
-                        {
-                            tooltipText = FindBlockTooltip(series, item.CategoryIndex, result.DataPoint.X);
-                        }
-                        if (!string.IsNullOrEmpty(tooltipText))
-                        {
-                            ShowTooltip(tooltipText);
-                            return;
-                        }
-                    }
-                }
                 HideTooltip();
             }
         }
 
         private void Plot_MouseLeave(object sender, MouseEventArgs e) => HideTooltip();
+
+        private void Plot_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+
+            if (!TryShowTooltip(e.GetPosition(plot)))
+            {
+                HideTooltip();
+            }
+        }
+
+        private bool TryShowTooltip(Point position)
+        {
+            if (plot?.Model is not PlotModel plotModel)
+            {
+                return false;
+            }
+
+            var screenPoint = new ScreenPoint(position.X, position.Y);
+
+            foreach (var series in plotModel.Series.OfType<IntervalBarSeries>())
+            {
+                var result = series.GetNearestPoint(screenPoint, true);
+                if (result?.Item is IntervalBarItem item)
+                {
+                    var tooltipText = ExtractTooltipText(item);
+                    if (string.IsNullOrEmpty(tooltipText))
+                    {
+                        tooltipText = FindBlockTooltip(series, item.CategoryIndex, result.DataPoint.X);
+                    }
+                    if (!string.IsNullOrEmpty(tooltipText))
+                    {
+                        ShowTooltip(tooltipText);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 
         public void SetActiveWorkplace(int? workplaceId)
         {
@@ -168,7 +185,7 @@ namespace BlockViz.Presentation.Views
             return DefaultFilterKey;
         }
 
-        // ¡Ú IntervalBarItem.Tag ¸¦ ÀüÇô »ç¿ëÇÏÁö ¾ÊÀ½ ? Title(Ç¥½Ã¸í)¸¸ »ç¿ë
+        // â˜… IntervalBarItem.Tag ë¥¼ ì „í˜€ ì‚¬ìš©í•˜ì§€ ì•ŠìŒ ? Title(í‘œì‹œëª…)ë§Œ ì‚¬ìš©
         private static string ExtractTooltipText(IntervalBarItem item)
             => string.IsNullOrWhiteSpace(item?.Title) ? string.Empty : item.Title;
 
