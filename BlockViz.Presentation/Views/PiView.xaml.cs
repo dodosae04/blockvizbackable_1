@@ -152,7 +152,7 @@ namespace BlockViz.Presentation.Views
                     var singleBlock = blockSlice.SingleBlock;
                     if (singleBlock != null)
                     {
-                        selectionService.SelectedBlock = singleBlock;
+                        selectionService?.SelectedBlock = singleBlock;
                     }
                 }
                 else
